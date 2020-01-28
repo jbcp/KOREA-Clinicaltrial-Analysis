@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Meta Description" />
+    <% include ./header.ejs %>
+
+    <title>
+        Phase별 임상시험 승인현황
+    </title>
+
+    <!--[if lte IE 8]>
+<link rel="stylesheet"  href="menuie.css" type="text/css" media="screen"/>
+<link rel="stylesheet"  href="vmenuie.css" type="text/css" media="screen"/>
+<![endif]-->
+    <script type="text/javascript" src="../js/totop.js">
+    </script>
+    <link rel="shortcut icon" href="../images/favicon.ico" />
+    <!--[if IE 7]>
+<style type="text/css" media="screen">
+#ttr_vmenu_items  li.ttr_vmenu_items_parent {margin-left:-16px;font-size:0px;}
+</style>
+<![endif]-->
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="html5shiv.js">
+</script>
+<script type="text/javascript" src="respond.min.js">
+</script>
+<![endif]-->
+</head>
+
+<body class="phase">
+    <div class="totopshow">
+        <a href="#" class="back-to-top"><img alt="Back to Top" src="../images/gototop0.png" /></a>
+    </div><!-- totopshow -->
+    <% include ./menu.ejs %>
+    <div id="ttr_page" class="container">
+
+        <div id="ttr_content_and_sidebar_container">
+            <div id="ttr_content">
+                <div id="ttr_html_content_margin" class="container-fluid">
+                    <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                    <div class="ttr_phase_html_row0 row">
+                            <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="ttr_phase_html_column00">
+                                    <div
+                                        style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                    </div>
+                                    <div class="html_content"><br style="line-height:1.49142857142857;" />
+                                        <p><span
+                                                style="font-family:'Arial';font-style:normal;font-weight:400;font-size:1em;color:rgba(0,0,0,1);"><span
+                                                    style="font-family:'Arial';font-size:1.571em;color:rgba(255,255,255,1);">시험단계(Phase)별</span><span
+                                                    style="font-family:'Arial';font-size:1.571em;color:rgba(255,255,255,1);">
+                                                </span><span
+                                                    style="font-family:'Arial';font-size:1.571em;color:rgba(255,255,255,1);">임상시험 승인현황</span><span
+                                                    style="font-size:1.071em;color:rgba(255,255,255,1);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span>
+                                        </p>
+                                        <p><span
+                                                style="font-family:'Arial';font-style:normal;font-weight:400;font-size:1em;color:rgba(0,0,0,1);"><span
+                                                    style="font-size:1.071em;color:rgba(255, 255, 255, 0.808);"> Last
+                                                    update : <%=lastUpdate%></span></span>
+                                        </p><br style="line-height:1.49142857142857;" />
+                                    </div>
+                                    <div
+                                        style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                </div>
+                            </div>
+                            
+                    </div>
+                    <div class="ttr_phase_html_row1 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                   
+                                    <div id="byPhaseChart" style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        // / Create the chart
+
+                                        var byPhase_json = <%- JSON.stringify(byPhase) %>;
+                                        var byPhase_category = [];
+                                        var byPhase_series = [];
+                                        $.each(byPhase_json, function (i, item) {
+                                            byPhase_series.push(byPhase_json[i].y);
+                                            if (byPhase_json[i].x === "") byPhase_category.push("데이터없음");
+                                            else byPhase_category.push(byPhase_json[i].x);
+
+
+                                        });
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byPhaseChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">'+
+                                                    '임상시험 승인현황(시험단계별) </p>'
+                                            },
+                                            xAxis: {
+                                                categories: byPhase_category,
+                                                crosshair: true
+                                            },
+
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+                                                formatter: function () {
+                                                    return '<b>' + this.x + ':  ' + Highcharts.numberFormat(
+                                                        this.y, 0, '', ',') + '</b><br/>';
+
+                                                }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            series: [{
+                                                name: "Phase",
+                                                data: byPhase_series,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }]
+                                        });
+                                    </script>
+
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+                   
+                    <div class="seperator row">
+                            <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                
+                            </div>
+                            
+                    </div>
+                    <!-- <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                        <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;">임상시험 승인현황(연도별/시험단계별)</span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험 승인 건수를 시험단계의 연도별로 그래프화 하였습니다.&nbsp;&nbsp;레전드를 클릭하세요.</span></p>
+                                            <br style="line-height:1.49142857142857;" />
+
+                                    <div id="byPhasePerYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    <script type="text/javascript">
+                                        // / Create the chart
+
+                                        var jdata = <%- JSON.stringify(byPhasePerYear) %>;
+                                        var seriesArr = [];
+                                        var nameArr = ['0상', '1b상', '1상', '1/2a상', '1/2상', '1/3상', '2상', '2a상', '2b상',
+                                            '2b/3상',
+                                            '2/3상', '3a상', '3b상', '3상', '3/4상', '4상', '연장', '연구자 임상시험', '생동', null
+                                        ];
+
+
+                                        $.each(nameArr, function (n, nValue) {
+
+                                            var nameStr = nValue;
+
+                                            if (nValue == null) nameStr = '데이터없음';
+
+                                            var series = {
+                                                name: nameStr,
+                                                data: []
+                                            };
+
+                                            $.each(jdata, function (j, jObjArr) {
+
+                                                if (jObjArr.phase === nValue) {
+
+                                                    series.data.push({
+                                                        x: jObjArr.year,
+                                                        y: jObjArr.y
+                                                    });
+
+                                                }
+                                            });
+                                            seriesArr.push(series);
+                                        });
+                                        // $.each(seriesArr, function (t, value) {
+                                        //     console.log(t + " ==>   " + JSON.stringify(value));
+                                        //     // console.log(t+ " ==>   " + value[0]+  value.data.x);
+                                        // });
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byPhasePerYearChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">'+'임상시험 승인현황(연도별/시험단계별) </p>'
+                                            },
+                                            // subtitle: {
+                                            //     text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+                                            // },
+                                            // xAxis: {
+                                            //     type: 'category'
+                                            // },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                                    '<td style="padding:0"><b>{point.y:,.0f}</b></td></tr>',
+                                                footerFormat: '</table>',
+                                                shared: true,
+                                                useHTML: true
+                                            },
+
+
+                                            plotOptions: { // data label on top of bar
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+
+
+                                            series: seriesArr
+                                            // series:  JSON.stringify(seriesArr) 
+                                            //[{"x":2013,"y":41},{"x":2014,"y":909},{"x":2015,"y":1023},{"x":2016,"y":821},{"x":2017,"y":474},{"x":2019,"y":1330}]
+
+                                        });
+                                    </script>
+
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div> -->
+                    <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                </div>
+                 <!--html_content_margin-->
+            </div>
+            <!--content-->
+            <div style="clear:both">
+            </div>
+
+           
+        </div>
+        <!--content_and_sidebar_container-->
+        <div style="height:0px;width:0px;overflow:hidden;"></div>
+        <% include ./footer.ejs %>
+        <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-bottom-collapse: separate;"></div>
+    </div>
+    <!--page-->
+</body>
+
+</html>

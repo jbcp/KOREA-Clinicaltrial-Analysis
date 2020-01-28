@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Meta Description" />
+    <% include ./header.ejs %>
+
+    <title>
+        다국가/국내별 임상시험 승인현황
+    </title>
+
+    <!--[if lte IE 8]>
+<link rel="stylesheet"  href="menuie.css" type="text/css" media="screen"/>
+<link rel="stylesheet"  href="vmenuie.css" type="text/css" media="screen"/>
+<![endif]-->
+    <script type="text/javascript" src="../js/totop.js">
+    </script>
+    <link rel="shortcut icon" href="../images/favicon.ico" />
+    <!--[if IE 7]>
+<style type="text/css" media="screen">
+#ttr_vmenu_items  li.ttr_vmenu_items_parent {margin-left:-16px;font-size:0px;}
+</style>
+<![endif]-->
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="html5shiv.js">
+</script>
+<script type="text/javascript" src="respond.min.js">
+</script>
+<![endif]-->
+</head>
+
+<body class="phase">
+    <div class="totopshow">
+        <a href="#" class="back-to-top"><img alt="Back to Top" src="../images/gototop0.png" /></a>
+    </div><!-- totopshow -->
+    <% include ./menu.ejs %>
+    <div id="ttr_page" class="container">
+        <div id="ttr_content_and_sidebar_container">
+            <div id="ttr_content">
+                <div id="ttr_html_content_margin" class="container-fluid">
+                    <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                    <div class="ttr_phase_html_row0 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column00">
+                                <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">     </div>
+                                <div class="html_content">
+                                    <br style="line-height:1.49142857142857;" />
+                                    <p>
+                                        <span style="font-family:'Arial';font-size:1.571em;color:rgba(255,255,255,1);">다국가/국내/가교시험 임상시험 승인현황</span>
+                                    </p>
+                                    <p>
+                                        <span style="font-family:'Arial';font-style:normal;font-weight:400;font-size:1em;color:rgba(0,0,0,1);"> <span style="font-size:1.071em;color:rgba(255, 255, 255, 0.808);"> Last
+                                                update : <%=lastUpdate%></span></span>
+                                    </p>
+                                    <br style="line-height:1.49142857142857;" />
+
+                                </div>
+                                <div  style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">  </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div  style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;"> 임상시험 승인현황 (다국가/국내 
+                                           /가교시험) </span></h2>
+                                  
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">
+                                            임상시험 승인 건수를 다국가/국내/가교시험으로 나누어 그래프화 하였습니다. </span></p>
+                                    <br style="line-height:1.49142857142857;" />
+
+                                    <div id="byTypeChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    <script type="text/javascript">
+                                        // / Create the chart
+                                        var byType_json = <%- JSON.stringify(byType) %>;
+                                        var byType_category = [];
+                                        var byType_series = [];
+                                        $.each(byType_json, function (i, item) {
+                                            if (byType_json[i].x === "" || byType_json[i].x === "NULL") {
+                                                if (byType_json[i].y === 0)
+                                            return; //continue                           
+                                                byType_category.push("데이터없음");
+                                            } else byType_category.push(byType_json[i].x);
+                                            byType_series.push(byType_json[i].y);
+                                        });
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byTypeChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">'+'임상시험 승인현황(다국가/국내/가교시험) </p>'
+                                            },
+                                            xAxis: {
+                                                categories: byType_category,
+                                                crosshair: true
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+                                                formatter: function () {
+                                                    return '<b>' + this.x + ' 임상시험 건수:  ' + Highcharts
+                                                        .numberFormat(
+                                                            this.y, 0, '', ',') + '</b><br/>';
+
+                                                    // return this.series.name + '-' + '<b>' + this.x + ':  ' +
+                                                    //     this.y + '</b><br/>';
+                                                }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            series: [{
+                                                name: "임상시험 승인현황(연도별,다국가/국내/가교시험)",
+                                                data: byType_series,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+
+                                            }]
+                                        });
+                                    </script>
+                                </div>
+                                <!--end of div class html_content -->
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+                    <div class="seperator row">
+                            <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"></div>
+                    </div>
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;"> 임상시험 승인현황(연도별,다국가/국내/가교시험) </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">
+                                            임상시험 승인 건수를 연도별과 다국가/국내/가교시험으로 그래프화 하였습니다.
+                                            &nbsp;&nbsp;레전드를 클릭하세요.</span></p>
+                                            <br style="line-height:1.49142857142857;" />
+
+                                    <div id="byTypePerYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    <script type="text/javascript">
+                                        var jdata = <%- JSON.stringify(byTypePerYear) %>;
+                                        var seriesArr = [];
+                                        var nameStr = jdata[0].type;
+
+                                        // if (jdata[0].type === null || jdata[0].type === "") nameStr = '데이터없음';
+                                        // if(typeof jdata[0].type ==='string')
+                                        //     console.log(" ==>  jdata[0]=" + jdata[0].type );
+
+                                        //  console.log(nameStr);
+                                        var series = {
+                                            name: nameStr,
+                                            data: []
+                                        };
+                                        // console.log("nameStr=" + nameStr );
+                                        $.each(jdata, function (j, jObjArr) {
+                                            //  console.log(j + " ==>  jdata[j]=" + jObjArr.type + "   series.name= " + series.name);
+                                            //  for (var j = 0; j <= jdata.length; j++) {
+
+                                            if (jObjArr.type === "" || jObjArr.type === null) {
+                                                nameStr = '데이터없음';
+                                            } else nameStr = jdata[j].type;
+                                            //    console.log(j + " ==>  nameStr=" + nameStr + "   series.name= " + series.name);
+                                            // var nameStr = jdata[j].type;
+                                            if (nameStr !== series.name) {
+                                                // nameStr = jObjArr.type;
+
+                                                // if (series.name !== nameStr) {
+
+                                                seriesArr.push(series);
+                                                series = {
+                                                    name: nameStr,
+                                                    data: []
+                                                }
+
+                                            };
+                                            series.data.push({
+                                                x: jObjArr.year,
+                                                y: jObjArr.y
+                                            });
+                                        });
+
+
+                                        seriesArr.push(series);
+
+
+                                        // $.each(seriesArr, function (t, value) {
+                                        //     console.log(seriesArr.length + " ==>   " + JSON.stringify(value));
+                                        //     // console.log(t+ " ==>   " + value[0]+  value.data.x);
+                                        // });
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byTypePerYearChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">'+'임상시험 승인현황 (연도별,다국가/국내/가교시험) </p>'
+                                            },
+                                            // subtitle: {
+                                            //     text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+                                            // },
+                                            // xAxis: {
+                                            //     type: 'category'
+                                            // },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                                    '<td style="padding:0"><b>{point.y:,.0f}</b></td></tr>',
+                                                footerFormat: '</table>',
+                                                shared: true,
+                                                useHTML: true
+                                            },
+
+
+                                            plotOptions: { // data label on top of bar
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+
+
+                                            series: seriesArr
+                                            // series:  JSON.stringify(seriesArr) 
+                                            //[{"x":2013,"y":41},{"x":2014,"y":909},{"x":2015,"y":1023},{"x":2016,"y":821},{"x":2017,"y":474},{"x":2019,"y":1330}]
+
+                                        });
+                                    </script>
+
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+                  
+                    <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                </div>
+                <!--content_margin-->
+
+            </div>
+            <!--content-->
+        </div>
+        <!--content_and_sidebar_container-->
+        <div style="clear:both"> </div>
+        <div style="height:0px;width:0px;overflow:hidden;"></div>
+        <% include ./footer.ejs %>
+        <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-bottom-collapse: separate;"></div>
+    </div>    
+    <!--page-->   
+</body>
+
+</html>

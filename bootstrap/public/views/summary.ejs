@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Meta Description" />
+    <% include ./header.ejs %>
+
+    <title>
+        한국 임상시험 승인현황
+    </title>
+
+    <!--[if lte IE 8]>
+<link rel="stylesheet"  href="menuie.css" type="text/css" media="screen"/>
+<link rel="stylesheet"  href="vmenuie.css" type="text/css" media="screen"/>
+<![endif]-->
+
+    <!--[if IE 7]>
+<style type="text/css" media="screen">
+#ttr_vmenu_items  li.ttr_vmenu_items_parent {margin-left:-16px;font-size:0px;}
+</style>
+<![endif]-->
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="html5shiv.js">
+</script>
+<script type="text/javascript" src="respond.min.js">
+</script>
+<![endif]-->
+</head>
+
+<body class="summary">
+    <div class="totopshow">
+        <a href="#" class="back-to-top"><img alt="Back to Top" src="../images/gototop0.png" /></a>
+    </div><!-- totopshow -->
+    <% include ./menu.ejs %>
+    <div id="ttr_page" class="container">
+        <div id="ttr_content_and_sidebar_container">
+            <div id="ttr_content">
+                <div id="ttr_html_content_margin" class="container-fluid">
+                    <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                    <div class="ttr_summary_html_row0 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_summary_html_column00">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <p style="text-align:Center;"><span
+                                            style="font-family:'Arial';font-size:1.857em;color:rgba(210,180,140,1);">KOREA</span><span
+                                            style="font-family:'Arial';font-size:1.857em;color:rgba(52,52,52,1);">
+                                        </span><span
+                                            style="font-family:'Arial';font-size:1.857em;color:rgba(105,105,105,1);">임상시험
+                                            승인현황</span></p>
+                                    <p style="text-align:Center;"><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.071em;color:rgba(105,105,105,1);">Last
+                                            updated :&nbsp;&nbsp; <%=lastUpdate%>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="download">download
+                                                csv file</a> </span></p>
+
+
+                                </div>
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+
+
+                    <div class="ttr_summary_html_row1 row">
+                        <div class="post_column col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="ttr_summary_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span class="ttr_image"
+                                            style="float:Left;overflow:hidden;margin:0em 0.36em 0em 0em;"><span><img
+                                                    class="ttr_fill" style="height:60px;max-width:64.6706586826348px;"
+                                                    src="../images/books_v2.png" alt="cts" /></span></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.286em;color:rgba(37,37,37,1);">총
+                                            임상시험</span>
+                                    </p>
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span
+                                            style="font-family:'Open Sans','Arial';font-size:2em;color:rgba(255,255,255,1);">
+                                            <%= total%></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.429em;color:rgba(105,105,105,1);">건</span>
+                                    </p>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+
+                                <div style="clear:both;"></div>
+
+                            </div>
+                        </div>
+                        <div class=" visible-xs-block" style="clear: both;"></div>
+                        <div class="post_column col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="ttr_summary_html_column11">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content ">
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span class="ttr_image"
+                                            style="float:Left;overflow:hidden;margin:0em 0.36em 0em 0em;"><span><img
+                                                    class="ttr_fill" style="height:60px;max-width:65.1428571428571px;"
+                                                    src="../images/early_v2.png" alt="early-icon" /></span></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.286em;color:rgba(110,110,110,1);">초기임상시험</span>
+
+                                        <sup><img src="../images/qmark.png" width="15px" height="15px" alt="?"
+                                                title="0상, 1/2a상, 1/2상, 1/3상,1b상, 1상, 2/3상, 2a상, 2상" />
+                                        </sup>
+
+                                    </p>
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span
+                                            style="font-family:'Open Sans','Arial';font-size:2em;color:rgba(53,53,53,1);">
+                                            <%= earlyCT%></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.429em;color:rgba(105,105,105,1);">건</span>
+                                    </p>
+                                </div>
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-sm-block visible-md-block visible-xs-block" style="clear: both;"></div>
+                        <div class="post_column col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="ttr_summary_html_column12">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span class="ttr_image"
+                                            style="float:Left;overflow:hidden;margin:0em 0.36em 0em 0em;"><span><img
+                                                    class="ttr_fill" style="height:60px;max-width:65.1428571428571px;"
+                                                    src="../images/aBook_v2.png" alt="abook" /></span></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.286em;color:rgba(52,52,52,1);">올해의
+                                            임상시험 </span></p>
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span
+                                            style="font-family:'Open Sans','Arial';font-size:2em;color:rgba(243,243,243,1);">
+                                            <%= thisYear %></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.429em;color:rgba(105,105,105,1);">건</span>
+                                    </p>
+                                </div>
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-xs-block" style="clear: both;"></div>
+                        <div class="post_column col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="ttr_summary_html_column13">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span class="ttr_image"
+                                            style="float:Left;overflow:hidden;margin:0em 0.36em 0em 0em;"><span><img
+                                                    class="ttr_fill" style="height:60px;max-width:65.1428571428571px;"
+                                                    src="../images/researcher_v2.png"
+                                                    alt="researcher" /></span></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.286em;color:rgba(52,52,52,1);">연구자
+                                            주도</span></p>
+                                    <p style="margin:0em 0em 0em 0em;text-align:Center;line-height:1.49142857142857;">
+                                        <span
+                                            style="font-family:'Open Sans','Arial';font-size:2em;color:rgba(243,243,243,1);">
+                                            <%= IIT%></span><span
+                                            style="font-family:'Open Sans','Arial';font-size:1.429em;color:rgba(105,105,105,1);">건</span>
+                                    </p>
+                                </div>
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+
+
+
+                    <div class="ttr_summary_html_row2 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_index_html_column30">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <div id="byYearChart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    <script type="text/javascript">
+                                        // / Create the chart
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byYearChart', {
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' + '연도별 임상시험 승인현황 </p>'
+                                            },
+                                            // subtitle: {
+                                            //     text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+                                            // },
+                                            // xAxis: {
+                                            //     type: 'category'
+                                            // },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+
+                                            },
+                                            legend: {
+                                                enabled: false
+                                            },
+                                            plotOptions: { // data label on top of bar
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+
+
+
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+                                                formatter: function () {
+                                                    // return this.series.name + '<br/>' + '<b>' + this.x + ':  ' +
+                                                    //     this.y + '</b><br/>';
+                                                    return '<b>' + this.x + '년 : ' + Highcharts
+                                                        .numberFormat(this.y,
+                                                            0, '', ',') + '</b><br/>';
+                                                }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+
+                                            series: [{
+                                                "name": "임상시험 건수",
+                                                // "colorByPoint": true,
+                                                "data": <%-JSON.stringify(byYear)%>
+                                                    //[{"x":2013,"y":41},{"x":2014,"y":909},{"x":2015,"y":1023},{"x":2016,"y":821},{"x":2017,"y":474},{"x":2019,"y":1330}]
+                                            }]
+
+                                        });
+                                    </script>
+                                </div>
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+                    <!-- <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;">임상시험 승인현황(연도별/시험단계별)</span>
+                                    </h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                            승인 건수를 시험단계의 연도별로 그래프화 하였습니다.&nbsp;&nbsp;레전드를 클릭하세요.</span></p>
+                                    <br style="line-height:1.49142857142857;" />
+
+                                    <div id="byYearbyPhaseChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    <script type="text/javascript">
+                                        // / Create the chart
+
+                                      
+                              
+                                        var nameArr = ['SIT', 'IIT', '데이터없음'];
+                                        var json = <%-JSON.stringify(byYearByPhase)%> ;
+                                        var series = {},
+                                            
+                                        categories=[];//year
+                                           
+
+                                      
+                                        $.each(json, function (i, item) {
+                                            var name=nameArr[0];
+                                            if(item.phase== null){
+                                                name=nameArr[2];
+                                            }
+                                            else if(item.phase== '연구자 임상시험'){
+                                                name=nameArr[1];
+                                            }
+                                            
+                                            if (!series[item.x]) { 
+                                                                                       
+                                                series[item.x] = item.y;                                               
+                                            } else series[item.id] += item.y;
+
+                                            if (!sites[item.id]) sites[item.id] = [];                                           
+
+                                        });
+                                        $.each(series, function (id, sum) {
+                                            aData.push({
+                                                name: id,
+                                                y: sum,                                               
+                                            });
+                                        });
+
+                                
+
+                                        $.each(nameArr, function (n, nValue) {
+
+                                            var series = {
+                                                name: nameStr,
+                                                data: []
+                                            };
+                                        });
+                                        $.each(json, function (i, item) {
+
+                                            if (!ids[item.id]) {
+
+                                                ids[item.id] = item.y;
+                                                k = 0;
+                                            } else ids[item.id] += item.y;
+
+                                            if (!sites[item.id]) sites[item.id] = [];
+
+                                            if (k < 30) sites[item.id].push([item.x, item.y]);
+                                            k++;
+
+                                        });
+
+                                        $.each(jdata, function (j, jObjArr) {
+
+                                            if (!se
+                                                jObjArr.phase === nValue) {
+
+                                                series.data.push({
+                                                    x: jObjArr.year,
+                                                    y: jObjArr.y
+                                                });
+
+                                            }
+                                            seriesArr.push(series);
+                                        });
+
+
+                                        // $.each(seriesArr, function (t, value) {
+                                        //     console.log(t + " ==>   " + JSON.stringify(value));
+                                        //     // console.log(t+ " ==>   " + value[0]+  value.data.x);
+                                        // });
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byPhasePerYebyYearbyPhaseChartarChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' + '임상시험 승인현황(연도별/시험단계별) </p>'
+                                            },
+                                            // subtitle: {
+                                            //     text: 'Click the columns to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>'
+                                            // },
+                                            // xAxis: {
+                                            //     type: 'category'
+                                            // },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                                    '<td style="padding:0"><b>{point.y:,.0f}</b></td></tr>',
+                                                footerFormat: '</table>',
+                                                shared: true,
+                                                useHTML: true
+                                            },
+
+
+                                            plotOptions: { // data label on top of bar
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+
+
+                                            series: seriesArr
+                                            // series:  JSON.stringify(seriesArr) 
+                                            //[{"x":2013,"y":41},{"x":2014,"y":909},{"x":2015,"y":1023},{"x":2016,"y":821},{"x":2017,"y":474},{"x":2019,"y":1330}]
+
+                                        });
+                                    </script>
+
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div> -->
+                </div>
+                <!--content_margin-->
+            </div>
+            <!--content-->
+            <div style="clear:both">
+            </div>
+        </div>
+        <!--container-->
+        <div style="height:0px;width:0px;overflow:hidden;"></div>
+        <% include ./footer.ejs %>
+        <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-bottom-collapse: separate;"></div>
+    </div>
+    <!--page-->
+</body>
+
+</html>

@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Meta Description" />
+    <% include ./header.ejs %>
+
+    <title>
+        주관기관 기준 임상시험 승인현황
+    </title>
+
+    <!--[if lte IE 8]>
+<link rel="stylesheet"  href="menuie.css" type="text/css" media="screen"/>
+<link rel="stylesheet"  href="vmenuie.css" type="text/css" media="screen"/>
+<![endif]-->
+    <script type="text/javascript" src="../js/totop.js">
+    </script>
+    <link rel="shortcut icon" href="../images/favicon.ico" />
+    <!--[if IE 7]>
+<style type="text/css" media="screen">
+#ttr_vmenu_items  li.ttr_vmenu_items_parent {margin-left:-16px;font-size:0px;}
+</style>
+<![endif]-->
+    <!--[if lt IE 9]>
+<script type="text/javascript" src="html5shiv.js">
+</script>
+<script type="text/javascript" src="respond.min.js">
+</script>
+<![endif]-->
+</head>
+
+<body class="phase">
+    <div class="totopshow">
+        <a href="#" class="back-to-top"><img alt="Back to Top" src="../images/gototop0.png" /></a>
+    </div><!-- totopshow -->
+    <% include ./menu.ejs %>
+    <div id="ttr_page" class="container">
+
+        <div id="ttr_content_and_sidebar_container">
+            <div id="ttr_content">
+                <div id="ttr_html_content_margin" class="container-fluid">
+                    <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                    <div class="ttr_phase_html_row0 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column00">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <p>
+                                        <span
+                                            style="font-family:'Arial';font-size:1.571em;color:rgba(255,255,255,1);">실시기관별
+                                            임상시험 승인현황</span>
+                                        <span
+                                            style="font-family:'Arial';font-size:1em;color:rgba(255,255,255,1);">&nbsp;&nbsp;&nbsp;
+                                            주관기관만 계수한 경우 </span>
+                                        <span
+                                            style="font-size:1.071em;color:rgb(212, 154, 154);">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    </p>
+
+                                    <p><span style="font-size:1.071em;color:rgba(255, 255, 255, 0.808);"> First data for
+                                            institution : <%=startDateSite%></span> </p>
+                                    <p><span style="font-size:1.071em;color:rgba(255, 255, 255, 0.808);"> Last data for
+                                            institution : <%=endDateSite%> </span></p>
+                                    <br style="line-height:1.49142857142857;" />
+
+                                </div>
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;"> 임상시험 승인현황 (연도별)
+                                        </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">
+                                            임상시험 실시기관으로
+                                            등록된 주관기관이 실시한 임상시험 데이터만을 추출하여 연도별 주관기관의 임상시험 건수를 그래프화하였습니다.
+                                            0상, 1상, 2상, 3상, 4상, 연장, 연구자 임상시험과 생동 시험을 포함하였습니다. </span></p>
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">
+                                            각 연도를 클릭하시면 해당 연도의 top 30 실시기관 그래프를 보실수 있습니다. </span></p>
+
+                                    <br style="line-height:1.49142857142857;" />
+                                    <div id="byYearSiteChart" style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(byYearBySite)%> ;
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+
+
+                                        //  var 
+                                        // $.each(d_json, function (i, item) {
+                                        //     data.push({
+                                        //         name: json[i].x,
+                                        //         y: json[i].y,
+                                        //         drilldown: json[i].x
+                                        //     });
+
+                                        // });
+                                        var k = 0;
+                                        $.each(json, function (i, item) {
+
+                                            if (!ids[item.id]) {
+
+                                                ids[item.id] = item.y;
+                                                k = 0;
+                                            } else ids[item.id] += item.y;
+
+                                            if (!sites[item.id]) sites[item.id] = [];
+
+                                            if (k < 30) sites[item.id].push([item.x, item.y]);
+                                            k++;
+
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+
+
+
+
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byYearSiteChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle"> 임상시험 승인현황 (연도별), 총 ' + Highcharts
+                                                    .numberFormat( <%=numSiteOfLead%> , 0, '',
+                                                        ',') + ' 건</p>'
+
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 당해 top 30 실시기관 임상시험 건수를 확인하세요. '
+                                            },
+
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "연도",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        </div>
+                    </div>
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;"> 임상시험 승인현황(실시기관별)
+                                        </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">
+                                            임상시험 실시기관으로 등록된 주관기관이 실시한 임상시험 데이터만을 추출하여 top 30 임상시험 실시기관을 그래프화하였습니다.
+                                            0상, 1상, 2상, 3상, 4상, 연장, 연구자 임상시험과 생동 시험을 모두 계수하였습니다.
+                                            각 실시기관을 클릭하시면 해당 실시기관의 연도별 임상시험 건수를 보실수 있습니다. </span></p>
+                                    <br style="line-height:1.49142857142857;" />
+
+                                    <div id="bySiteYearChart" style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(bySiteByYear)%> ;
+                                        var listjson = <%-JSON.stringify(bySiteOfLead)%>
+                                        ; //site_name is id in this graph : count(*) as y, site_name as x,
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+
+                                        console.log(JSON.stringify(json));
+                                        console.log(JSON.stringify(listjson));
+
+
+                                        $.each(listjson, function (i,
+                                        item) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            // console.log("listjson  "+i  +"  " + item.x);
+                                        });
+
+                                        $.each(json, function (i, item) {
+
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log(item.id);
+
+                                            sites[item.id].push([item.x, item.y]);
+
+
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('bySiteYearChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    '임상시험 승인현황(기관별), 총 ' + Highcharts.numberFormat( <%=numSiteOfLead%> , 0, '',
+                                                        ',') + ' 건</p>'
+
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 실시기관의 연도별 임상시험 건수를 확인하세요.'
+                                            },
+
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "실시기관",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
+                    </div>
+
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;"> 임상시험 승인현황 (지역별)</span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                            실시기관으로 등록된 주관기관의 지역별 임상시험 건수입니다.
+                                            0상, 1상, 2상, 3상, 4상, 연장, 연구자 임상시험과 생동 시험을 모두 계수하였습니다.</span></p>
+                                    <br style="line-height:1.49142857142857;" />
+                                    <div id="byLocationByYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json=<%-JSON.stringify(byLocationByYearOfLead)%>;
+                                        var listjson=<%-JSON.stringify(byLocationOfLead)%>; //Location is id in this graph : count(*) as y, Location as x,
+
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+                                        // console.log( JSON.stringify(listjson))   ;
+
+                                        //console.log( JSON.stringify(json))   ;
+                                        $.each(listjson, function (i,
+                                            item
+                                            ) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            // console.log("created:_"+item.x)   ;
+                                        });
+
+                                        $.each(json, function (i, item) {
+
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log("not in" + item.id);
+                                            sites[item.id].push([item.x, item.y]);
+
+
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        //  console.log( JSON.stringify(ids));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byLocationByYearChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    '임상시험 승인현황 (지역별), 총 ' + Highcharts.numberFormat( <%=numLocationOfLead%> , 0, '',
+                                                        ',') + ' 건</p>'
+
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 지역의 연도별 임상시험 개수를 확인하세요.'
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "지역",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+
+
+
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
+                    </div>
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.429em;"> 1상 임상시험 승인현황(실시기관별)
+                                    </span></h2>
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                        실시기관으로 등록된 주관기관이 실시한 1상 임상시험의 top 30 주관기관 그래프입니다.
+                                        1상, 1b상, 1/2a상, 1/2상, 1/3상 임상시험을 계수하였습니다.
+                                    </span></p>
+                                    <br style="line-height:1.49142857142857;" />
+                                    <div id="byPhase1ByYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(byPhase1ByYearOfLead)%>;
+                                        var listjson = <%-JSON.stringify(byPhase1OfLead)%>; //Location is id in this graph : count(*) as y, Location as x,
+
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+                                        // console.log( JSON.stringify(listjson))   ;
+
+                                        //console.log( JSON.stringify(json))   ;
+                                        $.each(listjson, function (i,
+                                        item) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            // console.log("created:_"+item.x)   ;
+                                        });
+
+                                        $.each(json, function (i, item) {
+
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log("not in" + item.id);
+                                            sites[item.id].push([item.x, item.y]);
+
+
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        //  console.log( JSON.stringify(ids));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byPhase1ByYearChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    ' 1상 임상시험 승인현황 (기관별), 총 ' + Highcharts.numberFormat( <%= numPhase1OfLead %> , 0, '',
+                                                        ',') + ' 건</p>'
+
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "실시기관",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
+                    </div>
+                    <!-- 1상 임상시험 승인현황 ( 건강한 자원자)   -->
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.429em;">1상 임상시험 승인현황 (건강한 자원자)
+                                        </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                            실시기관으로 등록된 주관기관이 실시한 1상 임상시험(건강한 자원자)의
+                                            top 30 실시기관 그래프입니다. 1상, 1b상, 1/2a상, 1/2상, 1/3상에서 건강한 자원자 임상시험을
+                                            계수하였습니다.</span></p>
+
+                                    <br style="line-height:1.49142857142857;" />
+                                    <div id="byPhase1HealthyByYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(byPhase1HealthyByYearOfLead) %> ;
+                                        var listjson = <%-JSON.stringify(byPhase1HealthyOfLead) %> ; //Location is id in this graph : count(*) as y, Location as x,
+
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+                                        // console.log( JSON.stringify(listjson))   ;
+
+                                        // console.log( JSON.stringify(json))   ;
+                                        $.each(listjson, function (i,
+                                        item) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            // console.log("created:_"+item.x)   ;
+                                        });
+
+                                        $.each(json, function (i, item) {
+
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log("not in" + item.id);
+                                            sites[item.id].push([item.x, item.y]);
+
+
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        //  console.log( JSON.stringify(ids));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byPhase1HealthyByYearChart', {
+
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    ' 1상 임상시험 승인현황 (건강한 자원자), 총 ' + Highcharts.numberFormat( <%= numPhase1HealthyOfLead %> , 0, '',
+                                                        ',') + ' 건</p>'
+
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "실시기관",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
+                    </div>
+                     <!-- 2상 임상시험 승인현황  -->
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.429em;"> 2상 임상시험 승인현황(실시기관별)
+                                    </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                        실시기관으로 등록된 주관기관이 실시한 2상 임상시험의  top 30 주관기관 그래프입니다.
+                                        1/2a상, 1/2상, 2상, 2a상, 2b상, 2b/3상, 2/3상 임상시험을 계수하였습니다.</span></p>
+                                    <br style="line-height:1.49142857142857;" />
+                                    <div id="byPhase2ByYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(byPhase2ByYearOfLead) %> ;
+                                        var listjson =  <%-JSON.stringify(byPhase2OfLead) %>; //Location is id in this graph : count(*) as y, Location as x,
+
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+                                        // console.log( JSON.stringify(listjson))   ;
+
+                                        //  console.log( JSON.stringify(json))   ;
+                                        $.each(listjson, function (i,
+                                        item) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            //  console.log("created:_"+item.x)   ;
+                                        });
+
+                                        $.each(json, function (i, item) {
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log("not in" + item.id);
+                                            sites[item.id].push([item.x, item.y]);
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        //  console.log( JSON.stringify(ids));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byPhase2ByYearChart', {
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    ' 2상 임상시험 승인현황 (기관별), 총 ' + Highcharts.numberFormat( <%= numPhase2OfLead %> , 0, '',
+                                                        ',') + ' 건</p>'
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "실시기관",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
+                    </div>
+                    <!-- 3상 임상시험 승인현황  -->
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.429em;"> 3상 임상시험 승인현황(실시기관별)
+                                    </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                        실시기관으로 등록된 주관기관이 실시한 3상 임상시험의 top 30 실시기관 그래프입니다.
+                                        1/3상, 2b/3상, 2/3상, 3a상, 3b상, 3상, 3/4상 임상시험을 계수하였습니다.</span></p>
+                                    <br style="line-height:1.49142857142857;" />
+
+                                    <div id="byPhase3ByYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(byPhase3ByYearOfLead) %> ;
+                                        var listjson =  <%-JSON.stringify(byPhase3OfLead) %>; //Location is id in this graph : count(*) as y, Location as x,
+
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+                                        // console.log( JSON.stringify(listjson))   ;
+
+                                        //  console.log( JSON.stringify(json))   ;
+                                        $.each(listjson, function (i,
+                                        item) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            //  console.log("created:_"+item.x)   ;
+                                        });
+
+                                        $.each(json, function (i, item) {
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log("not in" + item.id);
+                                            sites[item.id].push([item.x, item.y]);
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        //  console.log( JSON.stringify(ids));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byPhase3ByYearChart', {
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    ' 3상 임상시험 승인현황 (기관별), 총 ' + Highcharts.numberFormat( <%= numPhase3OfLead %> , 0, '',
+                                                        ',') + ' 건</p>'
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "실시기관",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>
+
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
+                    </div>
+
+                    <!-- 생동 시험 승인현황  -->
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.429em;"> 생동시험 승인현황(실시기관별)
+                                    </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                        실시기관으로 등록된 주관기관이 실시한 생동 시험 top 30 실시기관 그래프입니다. </span></p>
+                                    <br style="line-height:1.49142857142857;" />
+
+                                    <div id="byBEByYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(byBEByYearOfLead) %> ;
+                                        var listjson =  <%-JSON.stringify(byBEOfLead) %>; //Location is id in this graph : count(*) as y, Location as x,
+
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+                                         console.log( JSON.stringify(listjson))   ;
+
+                                          console.log( JSON.stringify(json))   ;
+                                        $.each(listjson, function (i,
+                                        item) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            console.log("created:_"+item.x)   ;
+                                        });
+
+                                        $.each(json, function (i, item) {
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log("not in" + item.id);
+                                            sites[item.id].push([item.x, item.y]);
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        //  console.log( JSON.stringify(ids));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byBEByYearChart', {
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    '생동시험 승인현황(기관별), 총 ' + Highcharts.numberFormat( <%=numBEOfLead %> , 0, '',
+                                                        ',') + ' 건</p>'
+
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "실시기관",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div> 
+
+                    <div class="seperator row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
+                    </div>
+                    <!-- 연구자 임상 시험 승인현황  -->
+                    <div class="ttr_phase_html_row3 row">
+                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="ttr_phase_html_column10">
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div class="html_content">
+                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.429em;"> 연구자 임상시험 승인현황(실시기관별)
+                                    </span></h2>
+
+                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
+                                        style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
+                                        실시기관으로 등록된 주관기관이 실시한 연구자 임상시험 top 30 실시기관의 그래프입니다. </span></p>
+                                    <br style="line-height:1.49142857142857;" />
+                                    <div id="byIITByYearChart"
+                                        style="min-width: 310px; height: 400px; margin: 0 auto">
+                                    </div>
+                                    <script type="text/javascript">
+                                        var json = <%-JSON.stringify(byIITByYearOfLead) %> ;
+                                        var listjson =  <%-JSON.stringify(byIITOfLead) %>; 
+
+                                        var ids = {},
+                                            idsData = [],
+                                            sites = {},
+                                            drilldownSeries = [];
+                                         console.log( JSON.stringify(listjson))   ;
+
+                                          console.log( JSON.stringify(json))   ;
+                                        $.each(listjson, function (i,
+                                        item) { //make listjson data to array                                          
+
+                                            ids[item.x] = 0;
+                                            sites[item.x] = [];
+                                            console.log("created:_"+item.x)   ;
+                                        });
+
+                                        $.each(json, function (i, item) {
+                                            ids[item.id] += item.y;
+                                            if (!sites[item.id]) console.log("not in" + item.id);
+                                            sites[item.id].push([item.x, item.y]);
+                                        });
+                                        $.each(ids, function (id, sum) {
+                                            idsData.push({
+                                                name: id,
+                                                y: sum,
+                                                drilldown: id
+                                            });
+                                        });
+
+                                        $.each(sites, function (x, y) {
+
+                                            drilldownSeries.push({
+                                                name: x,
+                                                id: x,
+                                                data: y
+                                            });
+                                        });
+                                        // console.log( JSON.stringify(sites));
+                                        //  console.log( JSON.stringify(ids));
+                                        Highcharts.setOptions({
+                                            lang: {
+                                                thousandsSep: ','
+                                            }
+                                        });
+
+                                        Highcharts.chart('byIITByYearChart', {
+                                            chart: {
+                                                type: 'column'
+                                            },
+                                            title: {
+                                                text: '<p class="graphTitle">' +
+                                                    '연구자 임상시험 승인현황(기관별), 총 ' + Highcharts.numberFormat( <%=  numIITOfLead %> , 0, '',
+                                                        ',') + ' 건</p>'
+
+                                            },
+                                            subtitle: {
+                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
+                                            },
+                                            xAxis: {
+                                                type: 'category',
+
+                                            },
+                                            yAxis: {
+                                                labels: {
+                                                    formatter: function () {
+                                                        return Highcharts.numberFormat(this.value, 0, '',
+                                                            ',');
+                                                    }
+                                                },
+                                                min: 0,
+                                                title: {
+                                                    text: 'Counts'
+                                                }
+                                            },
+                                            plotOptions: {
+                                                series: {
+                                                    borderWidth: 0,
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: '{point.y:,.0f} '
+                                                    }
+                                                }
+                                            },
+                                            credits: {
+                                                enabled: false
+                                            },
+                                            tooltip: {
+
+                                                headerFormat: '<span style = "font-size:11px">{series.name}</span><br>',
+                                                pointFormat: '<span style = "color:{point.color}">{point.name}</span>: <b>{point.y:,.0f}</b>'
+
+                                                // formatter: function () {
+                                                //     return '<b>' + this.name + ':  ' + this.id +
+                                                //         Highcharts.numberFormat(this.y, 0, '', ',') + '</b><br/>';
+                                                // }
+                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
+                                            },
+                                            "series": [{
+                                                name: "실시기관",
+                                                data: idsData,
+                                                "colorByPoint": true,
+                                                showInLegend: false
+                                            }],
+                                            "drilldown": {
+                                                "series": drilldownSeries
+                                            }
+                                        });
+                                    </script>
+                                </div>
+
+                                <div
+                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>
+                        </div>
+                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
+                            style="clear: both;"></div>
+                    </div>   
+
+
+                    <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;"></div>
+                </div>
+                <!--html_content_margin-->
+            </div>
+            <!--content-->
+
+            <div style="clear:both"> </div>
+            <div style="height:0px;width:0px;overflow:hidden;"></div>
+            <% include ./footer.ejs %>
+            <div style="height:0px;width:0px;overflow:hidden;-webkit-margin-bottom-collapse: separate;"></div>
+        </div>
+        <!--content_and_sidebar_container-->
+    </div>
+    <!--page-->
+</body>
+
+</html>
