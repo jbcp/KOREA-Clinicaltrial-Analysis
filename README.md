@@ -10,6 +10,13 @@
 
 ## Installation
 + ./bootstrap/config/db.properties 를 작성한다.
+```
+ID = [rds id]
+PASSWD = [rds password]
+rdsIP = [localhost / rds ip]
+dbPort = [port]
+
+```
 + go to ./bootstrap
 ```
 npm install
