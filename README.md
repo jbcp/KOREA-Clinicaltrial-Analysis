@@ -38,4 +38,4 @@ node server.js
 ![Clinicaltrial.kr](/ct1.png)
 
 ## Contact to developer(s)
- [Jhyoung lee ](https://github.com/jhlee/) - jhlee@jbcp.kr
+ [JIHYOUNG LEE](https://github.com/jhlee/) - jhlee@jbcp.kr
