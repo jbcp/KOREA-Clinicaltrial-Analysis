@@ -28,7 +28,7 @@ sudo javac -cp ../library/*:. ./*.java
 sudo java -cp ../library/*:. AnalysisCT
 ```
 
-+ go to ./bootstrap folder 
++ after ending previous processing, go to ./bootstrap folder 
 + run express server
 ```
 node server.js 
