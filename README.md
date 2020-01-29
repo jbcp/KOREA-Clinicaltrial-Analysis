@@ -1,5 +1,5 @@
 # Clinicaltrial.kr
-식약처에 등록된 임상시험 승인정보의 데이터를 정형화하여 분석한 사이트 참조 : www.clinicaltrial.kr 
+식약처에 등록된 임상시험 승인정보의 데이터를 정형화하여 분석한 사이트 구축 (www.clinicaltrial.kr)
 
 ## 주요 기능
 + 한국 임상시험 승인 현황을 파악할수 있다.
