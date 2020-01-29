@@ -13,8 +13,8 @@
 + go to ./bootstrap
 ```
 npm install
+cd ../src/
 ```
-+ go to  ./src/
 + run java with libraries
 ```
 sudo javac -cp ../library/*:. ./*.java
