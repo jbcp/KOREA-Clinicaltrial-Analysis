@@ -19,7 +19,6 @@ dbPort = [port]
 ```
 + go to ./bootstrap
 ```
-npm init
 npm install
 cd ../src/
 ```
