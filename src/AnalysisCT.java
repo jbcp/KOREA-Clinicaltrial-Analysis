@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+//test 테스트
 /* 목적: 주단위로 BASEURL에 있는 웹사이트에 접속하여 정보를 매번 새로운 database에 저장한다.
  * 
  *  
