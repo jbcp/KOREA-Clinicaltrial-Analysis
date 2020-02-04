@@ -263,7 +263,7 @@
                                         //  console.log( JSON.stringify(json))   ;
                                         $.each(listjson, function (i,
                                         item) { //make listjson data to array                                          
-
+                                          
                                             ids[item.x] = 0;
                                             sites[item.x] = [];
                                             //   console.log("created:_"+item.x)   ;
@@ -407,26 +407,34 @@
                                             idsData = [],
                                             sites = {},
                                             drilldownSeries = [];
-                                        // console.log( JSON.stringify(listjson))   ;
-
-                                        //console.log( JSON.stringify(json))   ;
+                                    // console.log( "11111111111111111111"+JSON.stringify(listjson))   ;
+                                    // console.log( "2222222222222222222222"+JSON.stringify(json))   ;
+                                    
                                         $.each(listjson, function (i,
                                         item) { //make listjson data to array                                          
-
+                                       
                                             ids[item.x] = 0;
                                             sites[item.x] = [];
                                             // console.log("created:_"+item.x)   ;
                                         });
 
                                         $.each(json, function (i, item) {
-
-                                            ids[item.id] += item.y;
-                                            if (!sites[item.id]) console.log("not in" + item.id);
-                                            sites[item.id].push([item.x, item.y]);
-
+                                           
+                                            if(item.id != null){
+                                                
+                                                 ids[item.id] += item.y;
+                                                // if (!sites[item.id]) console.log("not in  " + item.id);
+                                                 sites[item.id].push([item.x, item.y]);
+                                            }
+                                                 
 
                                         });
+
+
                                         $.each(ids, function (id, sum) {
+                                            if( id==null)
+                                            consol.log(id + "null ");
+
                                             idsData.push({
                                                 name: id,
                                                 y: sum,
@@ -442,7 +450,7 @@
                                                 data: y
                                             });
                                         });
-                                        // console.log( JSON.stringify(sites));
+                                        console.log( JSON.stringify(sites));
                                         //  console.log( JSON.stringify(ids));
                                         Highcharts.setOptions({
                                             lang: {
@@ -553,6 +561,12 @@
                                         var json = <%-JSON.stringify(byPhase1ByYearOfAll)%>;
                                         var listjson = <%-JSON.stringify(byPhase1OfAll)%>; //Location is id in this graph : count(*) as y, Location as x,
 
+
+
+
+
+
+                                        
                                         var ids = {},
                                             idsData = [],
                                             sites = {},
@@ -1080,21 +1094,26 @@
                                             idsData = [],
                                             sites = {},
                                             drilldownSeries = [];
-                                        // console.log( JSON.stringify(listjson))   ;
+                                        console.log( JSON.stringify(listjson))   ;
 
-                                        //  console.log( JSON.stringify(json))   ;
+                                         console.log( JSON.stringify(json))   ;
                                         $.each(listjson, function (i,
                                         item) { //make listjson data to array                                          
 
                                             ids[item.x] = 0;
                                             sites[item.x] = [];
-                                            //  console.log("created:_"+item.x)   ;
+                                             console.log("created:_"+item.x)   ;
                                         });
 
                                         $.each(json, function (i, item) {
-                                            ids[item.id] += item.y;
-                                            if (!sites[item.id]) console.log("not in" + item.id);
-                                            sites[item.id].push([item.x, item.y]);
+                                          if(item.x == null)       console.log(item.id+"null====:x"+item.x+item.y)   ;
+                                            if(item.y == null)      console.log(item.id+"null====:y"+item.x+item.y)   ;
+
+                                             ids[item.id] += item.y;
+                                                if(item.id == null)    console.log(item.id+"null====:_"+item.x+item.y)   ;
+                                                console.log("i"+item.id+"   "+item.x+item.y)   ;
+                                             sites[item.id].push([item.x, item.y]);
+                                       
                                         });
                                         $.each(ids, function (id, sum) {
                                             idsData.push({
@@ -1194,120 +1213,13 @@
                         <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
                             style="clear: both;"></div>
                     </div>
-                    <!-- <div class="ttr_phase_html_row3 row">
-                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="ttr_phase_html_column10">
-                                <div
-                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
-                                </div>
-                                <div class="html_content">
-                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
-                                            style="font-family:'Arial';font-size:1.429em;"> 2상 임상시험 승인현황(실시기관별)
-                                        </span></h2>
-
-                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
-                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
-                                            실시기관으로 등록된 주관기관이 실시한 2상 임상시험 건수와 top 30 주관기관의 그래프입니다.
-                                            1/2a상, 1/2상, 2상, 2a상, 2b상, 2b/3상, 2/3상 임상시험을 계수하였습니다.</span></p>
-                                    <br style="line-height:1.49142857142857;" />
-
-                                    <div id="byPhase2OfAllChart"
-                                        style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-                                    <script type="text/javascript">
-                                        // / Create the chart
-
-                                        var json = <%-JSON.stringify(byPhase2OfAll) %> ;
-                                        var category = [];
-                                        var series = [];
-                                        $.each(json, function (i, item) {
-                                            series.push(json[i].y);
-                                            if (json[i].x === "") category.push("데이터없음");
-                                            else category.push(json[i].x);
-
-                                        });
-                                        Highcharts.setOptions({
-                                            lang: {
-                                                thousandsSep: ','
-                                            }
-                                        });
-
-                                        Highcharts.chart('byPhase2OfAllChart', {
-
-                                            chart: {
-                                                type: 'column'
-                                            },
-                                            title: {
-                                                text: '<p class="graphTitle">' +
-                                                    '2상 임상시험 승인현황(기관별), 총 ' + Highcharts.numberFormat( <%=numPhase2OfAll %> , 0, '',
-                                                        ',') + ' 건</p>'
-
-                                            },
-                                            subtitle: {
-                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
-                                            },
-                                            xAxis: {
-                                                categories: category,
-                                                crosshair: true
-                                            },
-                                            yAxis: {
-                                                labels: {
-                                                    formatter: function () {
-                                                        return Highcharts.numberFormat(this.value, 0, '',
-                                                            ',');
-                                                    }
-                                                },
-                                                min: 0,
-                                                title: {
-                                                    text: 'Counts'
-                                                }
-                                            },
-                                            plotOptions: {
-                                                series: {
-                                                    borderWidth: 0,
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        format: '{point.y:,.0f} '
-                                                    }
-                                                }
-                                            },
-
-                                            credits: {
-                                                enabled: false
-                                            },
-                                            tooltip: {
-                                                formatter: function () {
-                                                    return '<b>' + this.x + ':  ' +
-                                                        Highcharts.numberFormat(this.y, 0, '', ',') +
-                                                        '</b><br/>';
-                                                }
-                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
-                                            },
-                                            series: [{
-                                                name: "Phase",
-                                                data: series,
-                                                "colorByPoint": true,
-                                                showInLegend: false
-                                            }]
-                                        });
-                                    </script>
-
-                                </div>
-
-                                <div
-                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                        </div>
-                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
-                            style="clear: both;"></div>
-                    </div> -->
+                  
                     <div class="seperator row">
                         <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
                     </div>
-                    <!-- 3상 임상시험 승인현황  -->
-                    <div class="ttr_phase_html_row3 row">
+                  
+                     <!-- 3상 임상시험 승인현황  -->
+                     <div class="ttr_phase_html_row3 row">
                         <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="ttr_phase_html_column10">
                                 <div
@@ -1595,113 +1507,7 @@
                         <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
                             style="clear: both;"></div>
                     </div>                    
-                    <!-- <div class="ttr_phase_html_row3 row">
-                        <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div class="ttr_phase_html_column10">
-                                <div
-                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
-                                </div>
-                                <div class="html_content">
-                                    <h2 style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
-                                            style="font-family:'Arial';font-size:1.429em;"> 생동시험 승인현황(실시기관별)
-                                        </span></h2>
-
-                                    <p style="margin:0.14em 0em 0em 0.57em;line-height:1.49142857142857;"><span
-                                            style="font-family:'Arial';font-size:1.071em;color:rgba(148,126,97,1);">임상시험
-                                            실시기관으로 등록된 주관기관이 실시한 생동 시험 건수와 top 30 주관기관의 그래프입니다. </span></p>
-                                    <br style="line-height:1.49142857142857;" />
-                                    <div id="byBEOfAllChart" style="min-width: 310px; height: 400px; margin: 0 auto">
-                                    </div>
-                                    <script type="text/javascript">
-                                        // / Create the chart
-
-                                        var json = <%-JSON.stringify(byBEOfAll) %> ;
-                                        var category = [];
-                                        var series = [];
-                                        $.each(json, function (i, item) {
-                                            series.push(json[i].y);
-                                            if (json[i].x === "") category.push("데이터없음");
-                                            else category.push(json[i].x);
-
-                                        });
-                                        Highcharts.setOptions({
-                                            lang: {
-                                                thousandsSep: ','
-                                            }
-                                        });
-
-                                        Highcharts.chart('byBEOfAllChart', {
-
-                                            chart: {
-                                                type: 'column'
-                                            },
-                                            title: {
-                                                text: '<p class="graphTitle">' +
-                                                    '생동시험 승인현황(기관별), 총 ' + Highcharts.numberFormat( <%=numBEOfAll %> , 0, '',
-                                                        ',') + ' 건</p>'
-
-                                            },
-                                            subtitle: {
-                                                text: 'Data from <%= startDateSite %> to <%= endDateSite %>. 열을 눌러서 각 실시기관의 연도별 임상시험 개수를 확인하세요.'
-                                            },
-                                            xAxis: {
-                                                categories: category,
-                                                crosshair: true
-                                            },
-                                            yAxis: {
-                                                labels: {
-                                                    formatter: function () {
-                                                        return Highcharts.numberFormat(this.value, 0, '',
-                                                            ',');
-                                                    }
-                                                },
-                                                min: 0,
-                                                title: {
-                                                    text: 'Counts'
-                                                }
-                                            },
-                                            plotOptions: {
-                                                series: {
-                                                    borderWidth: 0,
-                                                    dataLabels: {
-                                                        enabled: true,
-                                                        format: '{point.y:,.0f} '
-                                                    }
-                                                }
-                                            },
-
-                                            credits: {
-                                                enabled: false
-                                            },
-                                            tooltip: {
-                                                formatter: function () {
-                                                    return '<b>' + this.x + ':  ' +
-                                                        Highcharts.numberFormat(this.y, 0, '', ',') +
-                                                        '</b><br/>';
-                                                }
-                                                //     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                                                //pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b> of total<br/>'
-                                            },
-                                            series: [{
-                                                name: "Phase",
-                                                data: series,
-                                                "colorByPoint": true,
-                                                showInLegend: false
-                                            }]
-                                        });
-                                    </script>
-
-                                </div>
-
-                                <div
-                                    style="height:0px;width:0px;overflow:hidden;-webkit-margin-top-collapse: separate;">
-                                </div>
-                                <div style="clear:both;"></div>
-                            </div>
-                        </div>
-                        <div class=" visible-lg-block visible-sm-block visible-md-block visible-xs-block"
-                            style="clear: both;"></div>
-                    </div> -->
+                   
                     <div class="seperator row">
                         <div class="post_column col-lg-12 col-md-12 col-sm-12 col-xs-12"> </div>
                     </div>

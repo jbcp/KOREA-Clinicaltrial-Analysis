@@ -18,16 +18,16 @@ import java.util.logging.SimpleFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* 紐⑹쟻: 二쇰떒�쐞濡� BASEURL�뿉 �엳�뒗 �쎒�궗�씠�듃�뿉 �젒�냽�븯�뿬 �젙蹂대�� 留ㅻ쾲 �깉濡쒖슫 database�뿉 ���옣�븳�떎.
+/* 목적: 주단위로 BASEURL에 있는 웹사이트에 접속하여 정보를 매번 새로운 database에 저장한다.
  * 
  *  
  * Required library : Jsoup -1.11.3       
- * 2018-6-25 �씠吏��삎 
+ * 2018-6-25 이지형 
  * 
  * 
- * baseurl �씠 蹂�寃쎈맖 2019-1�썡 �솗�씤.
+ * baseurl 이 변경됨 2019-1월 확인.
  */
-/* 濡쒖쭅 �닚�꽌
+/* 로직 순서
  * 
  * database set up
  * -> save site reference data from CSV  on "site_ref" table
@@ -41,30 +41,29 @@ import java.util.regex.Pattern;
 
 public class AnalysisCT {
 	public static String BASEURL = "https://nedrug.mfds.go.kr/pbp/CCBBC01";
-	// 留곹겕
-	public final static boolean DEBUG =false;
+	// 링크
+	public final static boolean DEBUG = false;
 	public static String DIR;
-	
 
 	public final static Logger LOG = Logger.getLogger("AnalysisCT");
 
 	public AnalysisCT() {
-}
+		if (DEBUG)
+			BASEURL = "https://nedrug.mfds.go.kr/pbp/CCBBC01/getList?totalPages=1&page=1&limit=10&sort=&sortOrder=&searchYn=true&applyEntpName=&approvalDtStart=2012-03-27&approvalDtEnd=2012-03-31&prductName=&clinicStepCode=&clinicExamTitle=&btnSearch=";
+	}
 
 	public static void main(String[] args) {
 		DIR = System.getProperty("user.dir") + File.separator;
 		String logpath = DIR.replace("src", "") + File.separator + "log" + File.separator;
-		String configPath = DIR.replace("src", "") + File.separator + "bootstrap"+File.separator+"config" + File.separator;
+		String configPath = DIR.replace("src", "") + File.separator + "bootstrap" + File.separator + "config"
+				+ File.separator;
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 		Date myDate = new Date(System.currentTimeMillis());
-	
-
-
 
 		try {
 
-			FileHandler fh = new FileHandler(logpath + "analysisCT.log",true);
+			FileHandler fh = new FileHandler(logpath + "analysisCT.log", false);
 			fh.setFormatter(new SimpleFormatter() {
 				public String format(LogRecord log) {
 
@@ -78,38 +77,34 @@ public class AnalysisCT {
 
 			LOG.addHandler(fh);
 
-			
-			System.out.println("logpath: " +   logpath);
-			System.out.println("configpath:  " +   configPath);
+			System.out.println("logpath: " + logpath);
+			System.out.println("configpath:  " + configPath);
 			LocalDateTime currentTime = LocalDateTime.now();
-			LOG.log(Level.INFO,"===================Current DateTime: " + currentTime);
-			LOG.log(Level.INFO,"logpath: " + logpath);
-			LOG.log(Level.INFO,"configpath:  " + configPath);
-			
-			
+			System.out.println("Current DateTime: " + currentTime);
+			LOG.log(Level.INFO, "===================Current DateTime: " + currentTime);
+			LOG.log(Level.INFO, "logpath: " + logpath);
+			LOG.log(Level.INFO, "configpath:  " + configPath);
+
 			AnalysisCT act = new AnalysisCT();
 			SiteRef sref = new SiteRef();
-			
-				                        String query = sref.getSiteRefDataInsertQuery();
-System.out.println("query===== " +query);
-LOG.log(Level.INFO, "query===== " +query);	
 
 			// setup DB setting
 			ConnectDB.createDb();
 
-			
+			String query = sref.getSiteRefDataInsertQuery();
+
 			// if (DEBUG) sref.debugPrint();
-			
+
 			ConnectDB.sendWriteQuery(query);
 
 			act.startWebcrawling();
-			
-			
-			if (ConnectDB.isUpdated()) {// 以묎컙�뿉 �뒪�겕�옒�븨�씠 �쎒�궗�씠�듃 �씫�떎媛� �뿉�윭�굹�뒗 寃쎌슦媛� 醫낆쥌 �깮源�: �븘留덈룄 �쓳�떟�떆媛꾨븣臾몄씤�벏
-				// .. �뵲�씪�꽌 留덉�留됱뿉 珥� 媛쒖닔瑜� �뙆�븙�빐�꽌 �떎�떆 �뒪�겕�옒�븨�븯�뜕吏� �뾽�뜲�씠�듃 �븞�븯�뒗寃� 醫뗫떎.
+
+			if (ConnectDB.isUpdated()) {// 중간에 스크래핑이 웹사이트 읽다가 에러나는 경우가 종종 생김: 아마도 응답시간때문인듯
+				// .. 따라서 마지막에 총 개수를 파악해서 다시 스크래핑하던지 업데이트 안하는게 좋다.
 				ConnectDB.writeConfigFile(configPath + "db.ini");
 
-				ConnectDB.exportExcelFile(DIR.replace("src", "") + File.separator + "bootstrap"+File.separator+"public" + File.separator+"excelfiles"+File.separator);
+				ConnectDB.exportExcelFile(DIR.replace("src", "") + File.separator + "bootstrap" + File.separator
+						+ "public" + File.separator + "excelfiles" + File.separator);
 			}
 
 		} catch (Exception e) {
@@ -123,17 +118,12 @@ LOG.log(Level.INFO, "query===== " +query);
 		Document doc;
 
 		doc = Jsoup.connect(BASEURL).get();
-		// if (DEBUG) {
-	//	String testURL ="https://nedrug.mfds.go.kr/pbp/CCBBC01/getList?totalPages=4&page=4&limit=10&sort=&sortOrder=&searchYn=&applyEntpName=&approvalDtStart=2010-03-01&approvalDtEnd=2010-03-31&prductName=&clinicStepCode=&clinicExamTitle=";
-// doc = Jsoup.connect(testURL).get();
-		// }
 
 		Elements boardCountEls = doc.getElementsByClass("board_count");
 		Elements spanEls = boardCountEls.select("span");
 		int totalListNum = Integer.parseInt(spanEls.get(0).text().trim().replaceAll("[^0-9]+", ""));
 		int totalPages = (int) Math.ceil(totalListNum / 10.0);
-		// double ceilPages = Math.ceil(pages);
-		// System.out.println( Math.ceil(pages));
+
 		if (DEBUG)
 			System.out.println("total list num=" + totalListNum + "\ttotalPages=" + totalPages);
 
@@ -146,96 +136,96 @@ LOG.log(Level.INFO, "query===== " +query);
 		for (int i = totalPages; i > 0; i--) {
 			String url = BASEURL + "/getList?totalPages=" + totalPages + "&page=" + i + "&limit=10";
 			try {
-				readAPage(url);// thread濡� �븷�닔�룄 �엳吏�留� 洹몃윺�젮硫� �궇吏쒖닚�씠 �뿁留앹씠 �맆�닔 �엳�쓬.
+				readAPage(url);// thread로 할수도 있지만 그럴려면 날짜순이 엉망이 될수 있음.
 			} catch (IOException e) {
 
 				readAPage(url);
 			}
-	//if(DEBUG & (i==totalPages-2)) break;
+			// if(DEBUG & (i==totalPages-2)) break;
 		}
 
 	}
 
 	public void readAPage(String url) throws IOException, SQLException, Exception {
-//		if (DEBUG)
-//			System.out.println("[A page link] " + url);
+		if (DEBUG)
+			System.out.println("[A page link] " + url);
 
-		// �뀒�씠釉붿뿉�꽌 �븳以꾩뵫 泥섎━�빐�빞�븯誘�濡� tr elements 瑜� 李얜뒗�떎. tb_list>tbody>tr
+		// 테이블에서 한줄씩 처리해야하므로 tr elements 를 찾는다. tb_list>tbody>tr
 		Document doc = Jsoup.connect(url).get();
 		Element tableEl = doc.getElementsByClass("tb_list").first();
 		Element tbodyEl = tableEl.getElementsByTag("tbody").first();
 		Elements trs = tbodyEl.getElementsByTag("tr");
 
-		for (int i = trs.size() - 1; i >= 0; i--) { // �쎒 �궗�씠�듃媛� �뿭�닚�씠誘�濡� tr�쓣 留덉�留됱뿉�꽌遺��꽣 ���옣�빐�빞�븳�떎.
+		for (int i = trs.size() - 1; i >= 0; i--) { // 웹 사이트가 역순이므로 tr을 마지막에서부터 저장해야한다.
 			Element tr = trs.get(i);
 
-			saveRaw(tr,url);
-			
+			saveRaw(tr, url);
 
 		}
 
 	}
 
 	/*
-	 * 紐⑹쟻: tb_list �쓽 �븯�굹�쓽 �뻾�뿉�꽌 �떎�쓬 �뜲�씠�꽣瑜� 異붿텧�븯�뿬 DB�뿉 ���옣 1. "�떊泥��옄" �뿴 link �뵲�씪 �젒�냽�븯�뿬 �븳踰덈뜑 �겕濡ㅻ쭅�븳�떎.
-	 * 2. "�떎�떆湲곌�紐�" �뿴�쓽 �뜲�씠�꽣瑜� array 濡� ���옣�븳�떎. 3. 紐⑤뜽�쓣 �씠�슜�븯�뿬 DB�뿉 ���옣�븳�떎.
+	 * 목적: tb_list 의 하나의 행에서 다음 데이터를 추출하여 DB에 저장 1. "신청자" 열 link 따라 접속하여 한번더 크롤링한다.
+	 * 2. "실시기관명" 열의 데이터를 array 로 저장한다. 3. 모델을 이용하여 DB에 저장한다.
 	 *
-	 * sites data �삤瑜� ( tag2 移쇰읆 �뿉 諛섏쁺) 1. �삤湲�: 怨좎궛���븰援먮났�쓬蹂묒썝 ->怨좎떊���븰援먮났�쓬蹂묒썝 2. ���쟾���븰援먮��쟾�븳諛⑸퀝�썝
-	 * ->���쟾���븰援� �몦�궛�븳諛⑸퀝�썝 3. 以묒븰���븰援먯쓽怨쇰��븰遺��냽�슜�궛蹂묒썝 ->以묒븰���븰援먮퀝�썝 4. �쓣吏�蹂묒썝 ->�쓣吏����븰援� �쓣吏�蹂묒썝 5. �븳由쇰��븰援�
-	 * 媛뺣룞�꽦�떖蹂묒썝 ->�꽦�떖�쓽猷뚯옱�떒 媛뺣룞�꽦�떖蹂묒썝 6. �썝愿묐��븰援먮퀝�썝 ->�썝愿묐��븰援먯쓽怨쇰��븰蹂묒썝 7. 媛뺣룞寃쏀씗���븰援먮퀝�썝->媛뺣룞寃쏀씗���븰援먯쓽��蹂묒썝
+	 * sites data 오류 ( tag2 칼럼 에 반영) 1. 오기: 고산대학교복음병원 ->고신대학교복음병원 2. 대전대학교대전한방병원
+	 * ->대전대학교 둔산한방병원 3. 중앙대학교의과대학부속용산병원 ->중앙대학교병원 4. 을지병원 ->을지대학교 을지병원 5. 한림대학교
+	 * 강동성심병원 ->성심의료재단 강동성심병원 6. 원광대학교병원 ->원광대학교의과대학병원 7. 강동경희대학교병원->강동경희대학교의대병원
 	 * 
-	 * �뾾�뒗 寃쎌슦 NULL 泥섎━ 1. �쓽猷뚮쾿�씤 �삁�꽦�쓽猷뚯옱�떒 踰좊뜲�뒪�떎蹂묒썝 2. �븰援먮쾿�씤 �씤�븯蹂묒썝
+	 * 없는 경우 NULL 처리 1. 의료법인 예성의료재단 베데스다병원 2. 학교법인 인하병원
 	 */
-	public void saveRaw(Element trforaCT,String url) {
+	public void saveRaw(Element trforaCT, String url) {
 		String aref = null;
 		try {
 			ClinicalTrialModel ctModel = new ClinicalTrialModel();// DataModel
-			Elements tdsforaCT = trforaCT.getElementsByTag("td");		
+			Elements tdsforaCT = trforaCT.getElementsByTag("td");
 			String no = tdsforaCT.get(0).text().trim();
 			ctModel.setNo(Integer.parseInt(no));
-			
-			Element link = trforaCT.getElementsByTag("a").first(); // "�떊泥��옄" �뿴�쓽 link 媛믪씠�떎.
-			
+
+			Element link = trforaCT.getElementsByTag("a").first(); // "신청자" 열의 link 값이다.
+
 			aref = link.attr("abs:href");
 //			if (DEBUG)
 //	System.out.println("\t[detail link] " + aref);// detail link
 //		
-//			String progress = tdsforaCT.get(7).getElementsByTag("span").get(1).text().trim();// 吏꾪뻾�쁽�솴
-//			ctModel.setProgress(progress);
+			String sites = tdsforaCT.get(5).getElementsByTag("span").get(1).text().trim();// 실시기관명
 
-			// �쐞�뿉�꽌 援ы븳 "�떊泥��옄"link�뿉 �젒�냽�븯�뿬 �뜲�씠�꽣瑜� �룞�씪 DB�뿉 ���옣�븳�떎.
+//System.out.println("site===" + sites);
+
+			// 위에서 구한 "신청자"link에 접속하여 데이터를 동일 DB에 저장한다.
 
 			Document detailDoc = Jsoup.connect(aref).get();
 
 			Elements detailTbodys = detailDoc.getElementsByTag("tbody");
 
-			Element applicationInfoTbody = detailTbodys.get(0);// �엫�긽�떆�뿕 �떊泥��젙蹂�
-			Elements applicationInfoTds = applicationInfoTbody.getElementsByTag("td");// �엫�긽�떆�뿕 �떊泥��젙蹂�
+			Element applicationInfoTbody = detailTbodys.get(0);// 임상시험 신청정보
+			Elements applicationInfoTds = applicationInfoTbody.getElementsByTag("td");// 임상시험 신청정보
 
 			if (applicationInfoTds.size() != 3) {
-				  for( int i=0;i<applicationInfoTds.size();i++) {
-						String s=applicationInfoTds.get(i).text().trim();
-						System.out.println(i+ "==== " +s + "   lnegth="+s.length());
-					}
-				  throw new ReadCustomException("ERROR : detail website �엫�긽�떆�뿕 �떊泥��젙蹂�  3!= " + applicationInfoTds.size() + "  on " + aref+ "  on " + url);
+				for (int i = 0; i < applicationInfoTds.size(); i++) {
+					String s = applicationInfoTds.get(i).text().trim();
+					System.out.println(i + "==== " + s + "   lnegth=" + s.length());
+				}
+				throw new ReadCustomException("ERROR : detail website 임상시험 신청정보  3!= " + applicationInfoTds.size()
+						+ "  on " + aref + "  on " + url);
 			}
 			ctModel.setTitle(applicationInfoTds.get(0).text().trim());
-			
-			
+
 			ctModel.setApplicant(applicationInfoTds.get(1).text().trim());
-			
 
 			ctModel.setApprovalDate(applicationInfoTds.get(2).text().trim());
 
-			Element drugInfoTbody = detailTbodys.get(1);// �엫�긽�떆�뿕�쓽�빟�뭹 湲곕낯�젙蹂�
-			Elements drugInfoTds = drugInfoTbody.getElementsByTag("td");// �엫�긽�떆�뿕�쓽�빟�뭹 湲곕낯�젙蹂�
+			Element drugInfoTbody = detailTbodys.get(1);// 임상시험의약품 기본정보
+			Elements drugInfoTds = drugInfoTbody.getElementsByTag("td");// 임상시험의약품 기본정보
 			if (drugInfoTds.size() != 4) {
-				  for( int i=0;i<drugInfoTds.size();i++) {
-						String s=drugInfoTds.get(i).text().trim();
-						System.out.println(i+ "==== " +s + "   lnegth="+s.length());
+				for (int i = 0; i < drugInfoTds.size(); i++) {
+					String s = drugInfoTds.get(i).text().trim();
+					System.out.println(i + "==== " + s + "   lnegth=" + s.length());
 
-					}
-				  throw new ReadCustomException("ERROR : detail website �엫�긽�떆�뿕 �떊泥��젙蹂�  3!= " + applicationInfoTds.size() + "  on " + aref+ "  on " + url);
+				}
+				throw new ReadCustomException("ERROR : detail website 임상시험 신청정보  3!= " + applicationInfoTds.size()
+						+ "  on " + aref + "  on " + url);
 
 			}
 			ctModel.setProduct(drugInfoTds.get(0).text().trim());
@@ -243,15 +233,16 @@ LOG.log(Level.INFO, "query===== " +query);
 			ctModel.setComparator(drugInfoTds.get(2).text().trim());
 			ctModel.setPlacebo(drugInfoTds.get(3).text().trim());
 
-			Element ctInfoTbody = detailTbodys.get(2);// �엫�긽�떆�뿕 媛쒖슂
-			Elements ctInfoTds = ctInfoTbody.getElementsByTag("td");// �엫�긽�떆�뿕 媛쒖슂
+			Element ctInfoTbody = detailTbodys.get(2);// 임상시험 개요
+			Elements ctInfoTds = ctInfoTbody.getElementsByTag("td");// 임상시험 개요
 			if (ctInfoTds.size() != 5) {
-				  for( int i=0;i<ctInfoTds.size();i++) {
-						String s=drugInfoTds.get(i).text().trim();
-						System.out.println(i+ "==== " +s + "   lnegth="+s.length());
+				for (int i = 0; i < ctInfoTds.size(); i++) {
+					String s = drugInfoTds.get(i).text().trim();
+					System.out.println(i + "==== " + s + "   lnegth=" + s.length());
 
-					}
-				  throw new ReadCustomException("ERROR : detail website  �엫�긽�떆�뿕 媛쒖슂 5!= " + applicationInfoTds.size() + "  on " + aref+ "  on " + url);			
+				}
+				throw new ReadCustomException("ERROR : detail website  임상시험 개요 5!= " + applicationInfoTds.size()
+						+ "  on " + aref + "  on " + url);
 			}
 			ctModel.setTargetDisease(ctInfoTds.get(0).text().trim());
 			ctModel.setPhase(ctInfoTds.get(1).text().trim());
@@ -260,103 +251,144 @@ LOG.log(Level.INFO, "query===== " +query);
 			String totalsubject = ctInfoTds.get(4).text().trim();
 			ctModel.setTotalSubject(totalsubject);
 			// extract number to set setNumTotalSubject() and setNumDomesticSubject()
-			if (totalsubject != null && !totalsubject.equals("")) { // 鍮덇났��.
+
+			if (totalsubject != null && !totalsubject.equals("")) { // 빈공란.
 
 				totalsubject = totalsubject.replaceAll(",", "");
-				int wholeIndex = totalsubject.indexOf("�쟾泥�");
-				int domesticIndex = totalsubject.indexOf("援��궡");
-				if (wholeIndex >= 0 && domesticIndex >= 0) { // �쟾泥� 援��궡 �룞�떆
+				int wholeIndex = totalsubject.indexOf("전체");
+				int domesticIndex = totalsubject.indexOf("국내");
+				if (wholeIndex >= 0 && domesticIndex >= 0) { // 전체 국내 동시
 
 					String whole = totalsubject.substring(0, domesticIndex - 1);
 					String domestic = totalsubject.substring(domesticIndex);
 					ctModel.setNumTotalSubject(extractOneNum(whole));
 					ctModel.setNumDomesticSubject(extractOneNum(domestic));
 
-				} else if (domesticIndex >= 0) { // 援��궡留�
+				} else if (domesticIndex >= 0) { // 국내만
 
 					ctModel.setNumDomesticSubject(extractOneNum(totalsubject));
-				} else if (wholeIndex >= 0) { // �쟾泥대쭔
+				} else if (wholeIndex >= 0) { // 전체만
 
 					ctModel.setNumTotalSubject(extractOneNum(totalsubject));
 				} else { // unknwon error
-					System.out.println("error doing extract num_total_subject and num_domestic_subject. it is not one number " + totalsubject+" on "+  aref +"  on  "+url);
+					System.out.println(
+							"error doing extract num_total_subject and num_domestic_subject. it is not one number "
+									+ totalsubject + " on " + aref + "  on  " + url);
 
-					LOG.log(Level.WARNING, "error doing extract num_total_subject and num_domestic_subject.  it is not one number " + totalsubject+" on "+  aref +"  on  "+url);
+					LOG.log(Level.WARNING,
+							"error doing extract num_total_subject and num_domestic_subject.  it is not one number "
+									+ totalsubject + " on " + aref + "  on  " + url);
 
 				}
 			}
-			Element siteInfoTbody = detailTbodys.get(3);// �엫�긽�떆�뿕 �떎�떆湲곌� �젙蹂�
+			Element siteInfoTbody = detailTbodys.get(3);// 임상시험 실시기관 정보
 			Elements trs = siteInfoTbody.getElementsByTag("tr");
-			// system.out.println(trs.size());
-			int order=1;
-			int lead=1;
+
+//System.out.println("------------------trs size=" + trs.size());
+
+			int order = 1;
+			int lead = 1;
 			for (int i = 0; i < trs.size(); i++) {
+
 				Element tr = trs.get(i);
 				Elements spans = tr.getElementsByTag("span");
-				if (spans.size() < 6)// 癒몃━湲�留� �엳�뒗 寃쎌슦 size==1
-					continue;  //�븳以� 湲곌� �젙蹂댁쓽 spans.size()==6 �씠�떎. 
-//				if (spans.size() == 1 ) {// 癒몃━湲�留� �엳�뒗 寃쎌슦  size==1 �씠誘�濡� �젣�쇅�븷寃�.	
-//					Object obj= spans.get(0);
-//					if( obj==null)break;
-//					if( obj instanceof String) {
-//						if(obj.equals(""))	break;		
-//					}						
-//				}
-//				for(int k=0; k<spans.size();k++) {
-//					System.out.println("spans.size()="+spans.size()+"   i="+k+"  spans.get(i).text()= "+spans.get(k).text());
-//				}
-				
-				//System.out.println("spans.size()"+spans.size());
+				if (spans.size() < 6)// 머리글만 있는 경우 size==1
+					continue; // 한줄 기관 정보의 spans.size()==6 이다.
+
 				SiteCTModel sctModel = new SiteCTModel();
-				
-		
+
 				String siteNameOrg = spans.get(1).text().trim();
-				
-	
-				
+
 				sctModel.setSiteNameOrg(siteNameOrg);
 				// serch whether or not the site name exists in the reference.
-				int srefId = SiteRef.getSrefId(siteNameOrg.replaceAll("\\s", ""));// �쎇�뼱�벐湲곕�� 紐⑤몢 吏��슦怨� HashMap�뿉�꽌 寃��깋�븯�뿬 SrefId 媛믪쓣
-																				// �뼸�뒗�떎.
+				int srefId = SiteRef.getSrefId(siteNameOrg.replaceAll("\\s", ""));// 뛰어쓰기를 모두 지우고 HashMap에서 검색하여 SrefId
+																					// 값을 얻는다.
 				if (srefId > 0) {
 					sctModel.setSrefId(srefId);
-					String siteName=SiteRef.getSiteNameRef(srefId);					
+					String siteName = SiteRef.getSiteNameRef(srefId);
 					sctModel.setSiteName(siteName);
 					ctModel.addSites(siteName);
-					if(lead==1) sctModel.setMatchedLeadSite(lead--);
+					if (lead == 1)
+						sctModel.setMatchedLeadSite(lead--);
 				} else {// no match on referrence
-				//	sctModel.setSiteName(siteNameOrg);
+					// sctModel.setSiteName(siteNameOrg);
 					if (DEBUG)
 						System.out.println("[not in reference]" + siteNameOrg);
 
 					LOG.log(Level.INFO, "[not in reference] " + siteNameOrg);
-					
+
 				}
 				sctModel.setSiteOrder(order++);
 				sctModel.setAddress(spans.get(3).text().trim());
 				sctModel.setCorrectDate(spans.get(5).text().trim());
-				
+
 				ctModel.addSct(sctModel);
 			}
+//System.out.println("   222   " + ctModel.getSctList().size());
 
-			// save to mysql
+			if (ctModel.getSctList().size() == 0 && !sites.equals("")) {
+				order = 1;
+				String[] args = sites.split("/");
+//System.out.println(" sites= " + sites);
+				for (int i = 0; i < args.length; i++) {
+			
+//System.out.println(i + " order= " + order);
+					SiteCTModel sctModel = new SiteCTModel();
+
+					String siteNameOrg = args[i].trim();
+//	System.out.println(i + " siteNameORG= " + siteNameOrg);
+
+					if (siteNameOrg.equals(""))
+						continue;
+
+					sctModel.setSiteNameOrg(siteNameOrg);
+					// serch whether or not the site name exists in the reference.
+					int srefId = SiteRef.getSrefId(siteNameOrg.replaceAll("\\s", ""));// 뛰어쓰기를 모두 지우고 HashMap에서 검색하여
+//System.out.println("srefId==" + srefId);
+					// SrefId 값을 얻는다.
+					if (srefId > 0) {
+						sctModel.setSrefId(srefId);
+						String siteName = SiteRef.getSiteNameRef(srefId);
+//System.out.println(srefId +"    "+order+ " siteName= " + siteName);
+
+						sctModel.setSiteName(siteName);
+						ctModel.addSites(siteName);
+						if (lead == 1)
+							sctModel.setMatchedLeadSite(lead--);
+					} else {// no match on referrence
+						// sctModel.setSiteName(siteNameOrg);
+						if (DEBUG)
+							System.out.println("[not in reference]" + siteNameOrg);
+
+						LOG.log(Level.INFO, "[not in reference] " + siteNameOrg);
+
+//System.out.println("   111   " + ctModel.getSctList().size() + sctModel.getSiteName());
+					}
+
+					sctModel.setSiteOrder(order++);
+					ctModel.addSct(sctModel);
+				}
+//System.out.println("   222   " + ctModel.getSctList().size());
+			}
 			ConnectDB.writeModel(ctModel);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			// e.printStackTrace();
 			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + e.toString());
-			System.out.println("[detail link]" + aref + "\t" + url+"\t"+ e.toString());
+			System.out.println("[detail link]" + aref + "\t" + url + "\t" + e.toString());
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + url+"\t"+e.toString());
+			// e.printStackTrace();
+			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + url + "\t" + e.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + url+"\t"+e.toString());
+			// e.printStackTrace();
+			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + url + "\t" + e.toString());
 		}
 	}
+
 	public static int extractOneNum(String s) {
 		ArrayList<Integer> numList = new ArrayList<Integer>();
 		Pattern p = Pattern.compile("\\d+");
@@ -372,14 +404,9 @@ LOG.log(Level.INFO, "query===== " +query);
 
 	}
 
-	
-
-
-	class ReadCustomException extends Exception
-	{
-	  public ReadCustomException(String message)
-	  {
-	    super(message);
-	  }
+	class ReadCustomException extends Exception {
+		public ReadCustomException(String message) {
+			super(message);
+		}
 	}
 }

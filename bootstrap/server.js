@@ -267,7 +267,7 @@ async.parallel([ /// 시험책임자기준(allsites)  pi.ejs
         },
 
         function (callback) { //1 BY_SITE   시험책임자기준(allsites) : 병원별 전체 임상시험  
-            DB.query("select count(*) as y, site_name as x, site_name from VIEW_CT_SITECT_ALL group by site_name order by y desc LIMIT 30", null, function (error, result) {
+            DB.query("select count(*) as y, site_name as x, site_name from VIEW_CT_SITECT_ALL group by site_name order by y desc, site_name asc LIMIT 30", null, function (error, result) {
                 callback(null, result);
             });
         },
@@ -324,7 +324,7 @@ async.parallel([ /// 시험책임자기준(allsites)  pi.ejs
             });
         },
         function (callback) { //11 BY_PHASE2  시험책임자기준(allsites) :  병원별 2상 임상시험 
-            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase like '%2%'  group by site_name order by y desc LIMIT 30", null, function (error, result) {
+            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase like '%2%'  group by site_name order by y desc, site_name asc LIMIT 30", null, function (error, result) {
                 callback(null, result);
             });
         },
@@ -335,7 +335,7 @@ async.parallel([ /// 시험책임자기준(allsites)  pi.ejs
             });
         },
         function (callback) { //13 BY_PHASE3   시험책임자기준(allsites):  병원별 3상 임상시험 
-            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase like '%3%'  group by site_name order by y desc LIMIT 30", null, function (error, result) {
+            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase like '%3%'  group by site_name order by y desc, site_name asc LIMIT 30", null, function (error, result) {
                 callback(null, result);
             });
         },
@@ -346,7 +346,7 @@ async.parallel([ /// 시험책임자기준(allsites)  pi.ejs
             });
         },
         function (callback) { //15 BY_BE   시험책임자기준(allsites):  병원별 생동 임상시험 
-            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase = '생동'  group by site_name order by y desc LIMIT 30", null, function (error, result) {
+            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase = '생동'  group by site_name order by y desc, site_name asc LIMIT 30", null, function (error, result) {
               
              
                 callback(null, result);
@@ -359,7 +359,7 @@ async.parallel([ /// 시험책임자기준(allsites)  pi.ejs
             });
         },
         function (callback) { //17 BY_IIT   시험책임자기준(allsites):  병원별 IIT 생동 임상시험 
-            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase = '연구자 임상시험'  group by site_name order by y desc LIMIT 30", null, function (error, result) {
+            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_ALL where  phase = '연구자 임상시험'  group by site_name order by y desc, site_name asc LIMIT 30", null, function (error, result) {
               
              
                 callback(null, result);
@@ -481,7 +481,7 @@ async.parallel([ ///시험조정자기준(lead)  ci.ejs
         },
 
         function (callback) { //1 BY_SITE   시험조정자기준(lead) : 병원별 전체 임상시험 
-            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_LEAD group by site_name order by y desc LIMIT 30", null, function (error, result) {
+            DB.query("select count(*) as y, site_name as x  from VIEW_CT_SITECT_LEAD group by site_name order by y desc, site_name asc LIMIT 30", null, function (error, result) {
                 callback(null, result);
             });
         },

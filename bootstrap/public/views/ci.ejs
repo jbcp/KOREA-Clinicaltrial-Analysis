@@ -106,7 +106,7 @@
                                             sites = {},
                                             drilldownSeries = [];
 
-
+//var list=["서울", "부산", "인천", "대구", "광주","경기","울산", "경북", "경남","충북",  "전북","강원", "전남", "충남","제주"];
                                         //  var 
                                         // $.each(d_json, function (i, item) {
                                         //     data.push({
@@ -132,6 +132,7 @@
 
                                         });
                                         $.each(ids, function (id, sum) {
+                               
                                             idsData.push({
                                                 name: id,
                                                 y: sum,
@@ -268,8 +269,8 @@
                                             sites = {},
                                             drilldownSeries = [];
 
-                                        console.log(JSON.stringify(json));
-                                        console.log(JSON.stringify(listjson));
+                                       // console.log(JSON.stringify(json));
+                                       // console.log(JSON.stringify(listjson));
 
 
                                         $.each(listjson, function (i,
@@ -419,24 +420,25 @@
                                             idsData = [],
                                             sites = {},
                                             drilldownSeries = [];
-                                        // console.log( JSON.stringify(listjson))   ;
+                                         console.log( "list==?"+JSON.stringify(listjson))   ;
 
-                                        //console.log( JSON.stringify(json))   ;
+                                      console.log("json==?"+ JSON.stringify(json))   ;
                                         $.each(listjson, function (i,
                                             item
                                             ) { //make listjson data to array                                          
-
+                                               
                                             ids[item.x] = 0;
                                             sites[item.x] = [];
+                                         
                                             // console.log("created:_"+item.x)   ;
                                         });
 
                                         $.each(json, function (i, item) {
-
+                                            if(item.id!=null){
                                             ids[item.id] += item.y;
                                             if (!sites[item.id]) console.log("not in" + item.id);
                                             sites[item.id].push([item.x, item.y]);
-
+                                            }
 
                                         });
                                         $.each(ids, function (id, sum) {
@@ -584,6 +586,7 @@
                                         });
 
                                         $.each(json, function (i, item) {
+
 
                                             ids[item.id] += item.y;
                                             if (!sites[item.id]) console.log("not in" + item.id);

@@ -5,7 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -31,52 +32,50 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public class ConnectDB {
 	private static String CONNECTION = null;
-	private  static String URL_BASIC = null;
+	private static String URL_BASIC = null;
 	private static String DB = null;
 	private static String oldDB = null;
-	private static String ID=null;
-	private static String PASSWD=null;
-	private static String dbPort=null;
-	private static String rdsIP=null;
+	private static String ID = null;
+	private static String PASSWD = null;
+	private static String dbPort = null;
+	private static String rdsIP = null;
 
-	
-	public static  void setDBConnection() throws IOException {
-		
-		
-		String dir = System.getProperty("user.dir") + "\\";	
-		
-		String propFileName = dir.replace("src", "") + File.separator + "bootstrap"+File.separator+"config" + File.separator+"db.properties";
+	public static void setDBConnection() throws IOException {
+
+		String dir = System.getProperty("user.dir")+ File.separator;;
+
+		String propFileName = dir.replace("src", "") + File.separator + "bootstrap" + File.separator + "config"
+				+ File.separator + "db.properties";
 		System.out.println(propFileName);
-		
+
 		try {
-		Properties prop = new Properties();	
-		
-		try ( FileInputStream stream = new FileInputStream( new File(propFileName) )) {          
-			prop.load( stream );
-		    }catch( Exception e ){
-		    	   System.out.println(e);
-		     System.out.println(e);
-		     return;
-		    }
-			
-	
-		// get the property value and print it out
-		 ID = prop.getProperty("ID");
-		 PASSWD = prop.getProperty("PASSWD");
-		 rdsIP = prop.getProperty("rdsIP");
-		dbPort = prop.getProperty("dbPort");
+			Properties prop = new Properties();
 
-		URL_BASIC = "jdbc:mysql://" + rdsIP + ":" + dbPort + "";
-		System.out.println(ID +  PASSWD + "    URL_BASIC=" + URL_BASIC);
+			try (FileInputStream stream = new FileInputStream(new File(propFileName))) {
+				prop.load(stream);
+			} catch (Exception e) {
+				System.out.println(e);
+				System.out.println(e);
+				return;
+			}
 
-		}
-		catch(Exception e){
+			// get the property value and print it out
+			ID = prop.getProperty("ID");
+			PASSWD = prop.getProperty("PASSWD");
+			rdsIP = prop.getProperty("rdsIP");
+			dbPort = prop.getProperty("dbPort");
+
+			URL_BASIC = "jdbc:mysql://" + rdsIP + ":" + dbPort + "";
+			System.out.println(ID + PASSWD + "    URL_BASIC=" + URL_BASIC);
+
+		} catch (Exception e) {
 			System.out.println("Exception: " + e);
 		} finally {
-			
+
 		}
-		
+
 	}
+
 	public static void setDBName() {
 		try {
 			setDBConnection();
@@ -84,18 +83,20 @@ public class ConnectDB {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		DB = "db" + calUs.get(Calendar.YEAR) + "_" + String.format("%02d", calUs.get(Calendar.WEEK_OF_YEAR));
-//		oldDB = "db" + calUs.get(Calendar.YEAR) + "_" + String.format("%02d", calUs.get(Calendar.WEEK_OF_YEAR) - 1);
 
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
 		Date myDate = new Date(System.currentTimeMillis());
-		DB = "db"+dateFormat.format(myDate);
+		DB = "db" + dateFormat.format(myDate);
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(myDate);
 		cal.add(Calendar.DATE, -7);
-		oldDB = "db"+dateFormat.format(cal.getTime());
+		oldDB = "db" + dateFormat.format(cal.getTime());
 
+		if (AnalysisCT.DEBUG) {
+			DB = "test" + cal.get(Calendar.YEAR) + "_" + String.format("%02d", cal.get(Calendar.WEEK_OF_YEAR));
+			oldDB = "test" + cal.get(Calendar.YEAR) + "_" + String.format("%02d", cal.get(Calendar.WEEK_OF_YEAR) - 1);
+		}
 		System.out.println("-------------- DB setted :   " + DB);
 		AnalysisCT.LOG.log(Level.INFO, "-------------- DB setted :   " + DB);
 	}
@@ -137,9 +138,9 @@ public class ConnectDB {
 
 		} catch (SQLException e) {
 			if (newDbSize > 0)
-				return true; // error �뤆�룊�삕 �뜝�럡�룎�뜝�럥裕� �뇦猿뗫윪占쎈뮡 繞벿우삕 DB�뤆�룊�삕 �뜝�럥�뵪�뜝�럥裕� �뇦猿뗫윪占쎈뮡, 占쎈닱占쎈샍占쎌뭿爾욃뜝占� update �뜝�럥由썲뜝�럥堉�.
+				return true; // error 가 나는 경우 중 DB가 없는 경우, 무조건 update 한다.
 			else
-				return false; // newDBSize =0 �뜝�럩逾졿쾬�꼻�삕�슖�댙�삕 �솻洹⑥삕�뜝�럥由�嶺뚯쉻�삕 �뜝�럥瑜ュ뜝�럥裕됧뜝�럥堉�.
+				return false; // newDBSize =0 이므로 변하지 않는다.
 		}
 		return newDbSize > oldDbSize;
 	}
@@ -189,7 +190,7 @@ public class ConnectDB {
 		if (rs.next()) {
 			lastInsertId = rs.getInt(1);
 		}
-		// System.out.println(lastInsertId+"query===="+ aModel.getNo() );
+//System.out.println("aModel.getSites===="+ aModel.getSites() );
 
 		query = "INSERT INTO site_ct (f_ct_id, f_sref_id, site_name, site_name_org,address, location, correct_date,site_order, matched_lead_site) VALUES(?,?,?,?,?,?,?,?,?)";
 
@@ -209,7 +210,7 @@ public class ConnectDB {
 			ps.setInt(8, sctm.getSiteOrder());
 			ps.setInt(9, sctm.getMatchedLeadSite());
 			ps.executeUpdate();
-//System.out.println(sctm.toString());
+//System.out.println(sctm.getSiteName());
 		}
 
 		ps.close();
@@ -219,8 +220,8 @@ public class ConnectDB {
 
 	/* send a query to write on DB */
 	public static int sendWriteQuery(String query) throws SQLException {
-		if (AnalysisCT.DEBUG)
-			System.out.println(" received query=" + query);
+		//if (AnalysisCT.DEBUG)
+		//	System.out.println(" received query=" + query);
 		if (CONNECTION == null)
 			setupConnection();
 		// System.out.println("db="+DB);
@@ -238,8 +239,8 @@ public class ConnectDB {
 	}
 
 	/*
-	 * 嶺뚮ㅄ維쀯옙�쓤: create DB and tables, and upload data on site table �뛾�렮維뽬떋占�: 1. create db
-	 * mysql_create.sql 2. upload "�뜝�럩肉ュ뜝�럡留믣뜝�럥六삣뜝�럥�벍�뜝�럥堉꾢뜝�럥六사뼨轅명�쀥뜝�룞彛ゅ뜝�룞�삕占쎌젧�뜝�럩寃긷뜝�럩�꽯_20180115_keyword.csv" on "site"
+	 * 목적: create DB and tables, and upload data on site table 방법: 1. create db
+	 * mysql_create.sql 2. upload "임상시험실시기관지정현황_20180115_keyword.csv" on "site"
 	 * table *
 	 */
 
@@ -257,7 +258,7 @@ public class ConnectDB {
 		sendWriteQuery("CREATE TABLE IF NOT EXISTS `" + DB + "`.`site_ref` ("
 				+ " `sref_id` INT NOT NULL AUTO_INCREMENT, " + " `site_name_ref` VARCHAR(20) NOT NULL, "
 				+ " `tag1` VARCHAR(30) NULL, " + " `tag2` VARCHAR(20) NULL, " + " `address_ref` VARCHAR(100) NULL, "
-				+ "  `approval_type` VARCHAR(6) NULL, "+" UNIQUE INDEX `site_name_UNIQUE` (`site_name_ref` ASC)," 
+				+ "  `approval_type` VARCHAR(6) NULL, " + " UNIQUE INDEX `site_name_UNIQUE` (`site_name_ref` ASC),"
 				+ " PRIMARY KEY (`sref_id`)) " + " ENGINE = InnoDB");
 		sendWriteQuery("DROP TABLE IF EXISTS `" + DB + "`.`clinicaltrial` ");
 		sendWriteQuery("CREATE TABLE  IF NOT EXISTS `" + DB + "`.`clinicaltrial` ( "
@@ -300,22 +301,12 @@ public class ConnectDB {
 				"CREATE VIEW VIEW_CT_SITECT_ALL AS select  ct.ct_id ,s.site_order ,s.site_name, ct.title, ct.phase, ct.type, ct.approval_date, s.location from clinicaltrial  as ct left join site_ct as s  on ct.ct_id=s.f_ct_id where s.site_name is not null");
 		sendWriteQuery(
 				"CREATE VIEW VIEW_CT_SITECT_LEAD AS select ct.ct_id ,s.site_name, ct.title, ct.phase, ct.type, ct.approval_date, s.location from clinicaltrial  as ct left join site_ct as s on ct.ct_id=s.f_ct_id where s.site_name is not null and s.matched_lead_site=1 ");
-		// String setting="SET @@group_concat_max_len=15000"
-		// sendWriteQuery(setting);
-
-		// String createPublicTable="CREATE TABLE CSV AS select ct.approval_date,
-		// ct.product, ct.applicant, s.site_name, s.site_name_org, ct.title, ct.phase
-		// from clinicaltrial as ct left join (SELECT f_ct_id, GROUP_CONCAT(site_name
-		// SEPARATOR ', ') as site_name, GROUP_CONCAT(site_name_org SEPARATOR ', ') as
-		// site_name_org FROM site_ct GROUP BY f_ct_id)as s on ct.ct_id=s.f_ct_id";
-		// sendWriteQuery(createPublicTable);
-//		String exportCSV="SELECT * FROM PUBLIC INTO OUTFILE \'/tmp/"+DB+".csv\' CHARACTER SET euckr FIELDS TERMINATED BY \',\' OPTIONALLY ENCLOSED BY \'\"\'  LINES TERMINATED BY \'\r\n\' ";
-//		sendWriteQuery(exportCSV);
-
+		
 	}
 
 	public static void exportExcelFile(String path) throws SQLException {
-		if(CONNECTION==null)  setupConnection() ;
+		if (CONNECTION == null)
+			setupConnection();
 		Connection con = DriverManager.getConnection(CONNECTION, ID, PASSWD);
 		Statement stmt = con.createStatement();
 
@@ -324,11 +315,10 @@ public class ConnectDB {
 
 		ResultSet rs = null;
 		try {
-		
-			File exportFile=new File(path+"clinicaltrialkr.xls");
+			File exportFile = new File(path + "clinicaltrialkr.xls");
 			FileOutputStream fileOut = new FileOutputStream(exportFile);
-			
-			String query = "SELECT ct_id as no, approval_date as approval, applicant, product, title, phase, sites FROM clinicaltrial " ;
+
+			String query = "SELECT ct_id as no, approval_date as approval, applicant, product, title, phase, sites FROM clinicaltrial ";
 
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(query);
@@ -337,41 +327,43 @@ public class ConnectDB {
 
 			Row desRow1 = desSheet.createRow(0);
 			for (int col = 0; col < columnsNumber; col++) {
+
 				Cell newpath = desRow1.createCell(col);
 				newpath.setCellValue(rsmd.getColumnLabel(col + 1));
 			}
 
+
 			while (rs.next()) {
-				//System.out.println("Row number" + rs.getRow());
+	//System.out.println("Row number" + rs.getRow());
 				Row desRow = desSheet.createRow(rs.getRow());
 				for (int col = 0; col < columnsNumber; col++) {
 					Cell newpath = desRow.createCell(col);
 					newpath.setCellValue(rs.getString(col + 1));
-				}							
-				
+				}
+				// if(stop++==10) break;
+
 			}
 			writeWorkbook.write(fileOut);
 			fileOut.close();
 			writeWorkbook.close();
 			System.out.println(exportFile.getAbsoluteFile());
-			AnalysisCT.LOG.log(Level.INFO, "File is exported as "+ exportFile.getAbsoluteFile());
+			AnalysisCT.LOG.log(Level.INFO, "File is exported as " + exportFile.getAbsoluteFile());
 
 		} catch (SQLException | IOException e) {
 			System.out.println("Failed to get data from database");
-	
+
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			AnalysisCT.LOG.log(Level.INFO, "[SEVERE]Failed to get data from database" );
+			AnalysisCT.LOG.log(Level.INFO, "[SEVERE]Failed to get data from database");
 		}
 
 	}
 
-	/* �뜝�럩肉ュ뜝�럡留믣뜝�럥六삣뜝�럥�벍 �뜝�럥堉꾢뜝�럥六사뼨轅명�쀥뜝占� 嶺뚯쉻�삕�뜝�럩�젧 �뜝�럩寃긷뜝�럩�꽯 update */
-	public static void main(String[] args) {
 
+	/* 임상시험 실시기관 지정 현황 update */
+	public static void main(String[] args) {
 		try {
 
-			
 			setDBConnection();
 
 		} catch (Exception e) {
@@ -389,10 +381,10 @@ public class ConnectDB {
 
 		FileWriter fw = new FileWriter(fileName, false);
 		StringBuilder sb = new StringBuilder();
-		sb.append("host ="+rdsIP+"\n");
+		sb.append("host =" + rdsIP + "\n");
 		sb.append("user = " + ID + "\n");
 		sb.append("pwd = " + PASSWD + "\n");
-		sb.append("port= "+ dbPort+"\n");
+		sb.append("port= 3306\n");
 		sb.append("dbname = " + DB + "\n");
 		// sb.append("update = " +LocalDate.now() + "\n");
 		fw.write(sb.toString());
