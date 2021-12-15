@@ -22,7 +22,7 @@ import java.util.Calendar;
 
 import java.util.Locale;
 import java.util.Properties;
-import java.util.logging.Level;
+// import java.util.logging.Level;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -98,7 +98,7 @@ public class ConnectDB {
 			oldDB = "test" + cal.get(Calendar.YEAR) + "_" + String.format("%02d", cal.get(Calendar.WEEK_OF_YEAR) - 1);
 		}
 		System.out.println("-------------- DB setted :   " + DB);
-		AnalysisCT.LOG.log(Level.INFO, "-------------- DB setted :   " + DB);
+	//	AnalysisCT.LOG.log(Level.INFO, "-------------- DB setted :   " + DB);
 	}
 
 	public static void setupConnection() {
@@ -347,14 +347,14 @@ public class ConnectDB {
 			fileOut.close();
 			writeWorkbook.close();
 			System.out.println(exportFile.getAbsoluteFile());
-			AnalysisCT.LOG.log(Level.INFO, "File is exported as " + exportFile.getAbsoluteFile());
+		//	AnalysisCT.LOG.log(Level.INFO, "File is exported as " + exportFile.getAbsoluteFile());
 
 		} catch (SQLException | IOException e) {
 			System.out.println("Failed to get data from database");
 
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			AnalysisCT.LOG.log(Level.INFO, "[SEVERE]Failed to get data from database");
+			//AnalysisCT.LOG.log(Level.INFO, "[SEVERE]Failed to get data from database");
 		}
 
 	}
@@ -390,7 +390,7 @@ public class ConnectDB {
 		fw.write(sb.toString());
 		fw.close();
 
-		AnalysisCT.LOG.log(Level.INFO, "--------------db. ini is written  with DB name=  " + DB);
+		//AnalysisCT.LOG.log(Level.INFO, "--------------db. ini is written  with DB name=  " + DB);
 
 	}
 

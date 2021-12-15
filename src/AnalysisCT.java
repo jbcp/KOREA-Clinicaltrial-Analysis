@@ -10,11 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 //test 테스트
@@ -45,7 +41,7 @@ public class AnalysisCT {
 	public final static boolean DEBUG = false;
 	public static String DIR;
 
-	public final static Logger LOG = Logger.getLogger("AnalysisCT");
+//	public final static Logger LOG = Logger.getLogger("AnalysisCT");
 
 	public AnalysisCT() {
 		if (DEBUG)
@@ -63,27 +59,27 @@ public class AnalysisCT {
 
 		try {
 
-			FileHandler fh = new FileHandler(logpath + "analysisCT.log", false);
-			fh.setFormatter(new SimpleFormatter() {
-				public String format(LogRecord log) {
+			//FileHandler fh = new FileHandler(logpath + "analysisCT.log", false);
+			// fh.setFormatter(new SimpleFormatter() {
+			// 	public String format(LogRecord log) {
 
-					String logOutput = "[" + (new Date()).toString() + "][" + log.getLevel() + "] MSG[ "
-							+ log.getMessage() + "]\n";
+			// 		String logOutput = "[" + (new Date()).toString() + "][" + log.getLevel() + "] MSG[ "
+			// 				+ log.getMessage() + "]\n";
 
-					return logOutput;
-				}
-			});
-			fh.setEncoding("utf-8");
+			// 		return logOutput;
+			// 	}
+			// });
+			// fh.setEncoding("utf-8");
 
-			LOG.addHandler(fh);
+			// LOG.addHandler(fh);
 
-			System.out.println("logpath: " + logpath);
-			System.out.println("configpath:  " + configPath);
+			//System.out.println("logpath: " + logpath);
+		//	System.out.println("configpath:  " + configPath);
 			LocalDateTime currentTime = LocalDateTime.now();
-			System.out.println("Current DateTime: " + currentTime);
-			LOG.log(Level.INFO, "===================Current DateTime: " + currentTime);
-			LOG.log(Level.INFO, "logpath: " + logpath);
-			LOG.log(Level.INFO, "configpath:  " + configPath);
+		//	System.out.println("Current DateTime: " + currentTime);
+			//LOG.log(Level.INFO, "===================Current DateTime: " + currentTime);
+		//	LOG.log(Level.INFO, "logpath: " + logpath);
+			//LOG.log(Level.INFO, "configpath:  " + configPath);
 
 			AnalysisCT act = new AnalysisCT();
 			SiteRef sref = new SiteRef();
@@ -110,7 +106,7 @@ public class AnalysisCT {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			LOG.log(Level.SEVERE, e.toString());
+			//LOG.log(Level.SEVERE, e.toString());
 		}
 	}
 
@@ -127,7 +123,7 @@ public class AnalysisCT {
 		if (DEBUG)
 			System.out.println("total list num=" + totalListNum + "\ttotalPages=" + totalPages);
 
-		LOG.log(Level.INFO, "total list num=" + totalListNum);
+		//LOG.log(Level.INFO, "total list num=" + totalListNum);
 		readAll(totalPages);
 	}
 
@@ -275,9 +271,9 @@ public class AnalysisCT {
 							"error doing extract num_total_subject and num_domestic_subject. it is not one number "
 									+ totalsubject + " on " + aref + "  on  " + url);
 
-					LOG.log(Level.WARNING,
-							"error doing extract num_total_subject and num_domestic_subject.  it is not one number "
-									+ totalsubject + " on " + aref + "  on  " + url);
+					//Log.log(Level.WARNING,
+							//"error doing extract num_total_subject and num_domestic_subject.  it is not one number "
+									//+ totalsubject + " on " + aref + "  on  " + url);
 
 				}
 			}
@@ -315,7 +311,7 @@ public class AnalysisCT {
 					if (DEBUG)
 						System.out.println("[not in reference]" + siteNameOrg);
 
-					LOG.log(Level.INFO, "[not in reference] " + siteNameOrg);
+					//Log.log(Level.INFO, "[not in reference] " + siteNameOrg);
 
 				}
 				sctModel.setSiteOrder(order++);
@@ -360,7 +356,7 @@ public class AnalysisCT {
 						if (DEBUG)
 							System.out.println("[not in reference]" + siteNameOrg);
 
-						LOG.log(Level.INFO, "[not in reference] " + siteNameOrg);
+						//Log.log(Level.INFO, "[not in reference] " + siteNameOrg);
 
 //System.out.println("   111   " + ctModel.getSctList().size() + sctModel.getSiteName());
 					}
@@ -375,17 +371,17 @@ public class AnalysisCT {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
-			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + e.toString());
+			//Log.log(Level.SEVERE, "[detail link]" + aref + "\t" + e.toString());
 			System.out.println("[detail link]" + aref + "\t" + url + "\t" + e.toString());
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
-			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + url + "\t" + e.toString());
+			//Log.log(Level.SEVERE, "[detail link]" + aref + "\t" + url + "\t" + e.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
-			LOG.log(Level.SEVERE, "[detail link]" + aref + "\t" + url + "\t" + e.toString());
+			//Log.log(Level.SEVERE, "[detail link]" + aref + "\t" + url + "\t" + e.toString());
 		}
 	}
 
